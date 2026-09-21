@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { X } from "lucide-react";
-import { PUPPIES, PRICE, waLink } from "@/lib/site";
+import { PUPPIES, PUPPIES_SOON, LITTER_PHOTO, PRICE, waLink } from "@/lib/site";
 import { SectionHead, Reveal, WhatsAppIcon, EASE } from "@/components/site/Shared";
 
 const FILTERS = [
@@ -112,7 +112,58 @@ export default function Puppies() {
               </motion.article>
             ))}
           </AnimatePresence>
+
+          <Reveal delay={0.1} className="h-full">
+            <article data-testid="puppy-card-coming-soon" className="group h-full">
+              <div className="relative overflow-hidden rounded-2xl bg-sand aspect-[4/5]">
+                <img
+                  src={PUPPIES_SOON.img}
+                  alt="Camada próxima, aún no lista para entrega"
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <span className="absolute top-4 left-4 rounded-full bg-copper text-bone px-3.5 py-1.5 text-xs font-semibold">
+                  Próximamente
+                </span>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent p-5 pt-12">
+                  <h3 className="font-serif text-2xl text-bone">Aún no están listos</h3>
+                  <p className="text-sm text-bone/85 mt-1">
+                    Esta camada todavía no está preparada para la entrega.
+                  </p>
+                </div>
+              </div>
+              <a
+                href={waLink(
+                  "¡Hola! Quiero que me aviséis cuando la próxima camada de cachorros esté lista para la entrega."
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="puppy-notify-whatsapp-btn"
+                className="mt-4 flex items-center justify-center gap-2 rounded-full border border-ink/15 py-3 text-sm font-semibold hover:bg-wa hover:border-wa hover:text-white transition-all duration-300"
+              >
+                <WhatsAppIcon className="w-4 h-4" />
+                Avísame cuando estén listos
+              </a>
+            </article>
+          </Reveal>
         </motion.div>
+
+        <Reveal className="mt-10 md:mt-14">
+          <figure
+            data-testid="litter-photo"
+            className="relative overflow-hidden rounded-3xl border border-line"
+          >
+            <img
+              src={LITTER_PHOTO}
+              alt="La camada actual al completo"
+              loading="lazy"
+              className="w-full aspect-[4/3] sm:aspect-[21/8] object-cover"
+            />
+            <figcaption className="absolute bottom-4 left-4 rounded-full bg-ink/85 backdrop-blur text-bone px-4 py-2 text-xs md:text-sm font-semibold tracking-wide">
+              La camada actual al completo
+            </figcaption>
+          </figure>
+        </Reveal>
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>

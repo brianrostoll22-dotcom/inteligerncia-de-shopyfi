@@ -132,21 +132,24 @@ export const GALLERY_PHOTOS = [
   },
 ];
 
+export const LITTER_PHOTO =
+  "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/aiezckpo_pastores.png";
+
+export const PUPPIES_SOON = {
+  name: "Camada próxima",
+  img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/85zmvs98_aun%20no%20listos.jpg",
+};
+
 export const VIDEOS = [
   {
-    id: "PHv16beRjzw",
-    title: "La camada jugando",
-    caption: "Momentos de juego y exploración de una de nuestras camadas.",
+    src: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/q0728iqz_2552333e-30b2-4632-b098-874d482ca830.mov",
+    title: "La camada en el día a día",
+    caption: "Momentos reales de nuestros cachorros en el criadero.",
   },
   {
-    id: "dutcMDEsivg",
-    title: "Socialización temprana",
-    caption: "Trabajamos la socialización desde las primeras semanas.",
-  },
-  {
-    id: "wIaPpKsVXmM",
-    title: "Primeros pasos al aire libre",
-    caption: "Los cachorros descubren el exterior en compañía de la madre.",
+    src: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/th4gez0p_5f35e268-9460-4cca-850a-d90b150dd3e8.mov",
+    title: "Explorando al aire libre",
+    caption: "Los cachorros descubren el exterior jugando juntos.",
   },
 ];
 

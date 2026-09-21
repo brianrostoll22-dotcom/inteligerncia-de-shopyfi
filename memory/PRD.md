@@ -47,3 +47,8 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 
 ## Iteración 4 (2026-09-21) — feedback del usuario
 - Catálogo: sustituidas las fotos de Thor, Kira, Luna, Max y Roxy por las 5 fotos reales enviadas por el usuario (assets 10–14). Ares conserva su foto original. Verificado que las 6 imágenes cargan.
+
+## Iteración 5 (2026-09-21) — feedback del usuario
+- Apartado de cachorros: añadida la foto real de toda la camada junta (pastores.png) como banda panorámica con el rótulo "La camada actual al completo".
+- Nueva tarjeta "Próximamente" con la foto de los dos cachorros pequeños ("aun no listos.jpg"): estado "Aún no están listos" + botón WhatsApp "Avísame cuando estén listos" (sin reserva).
+- Galería de camadas: sustituidos los 3 embeds de YouTube por los 2 vídeos reales (.mov) del usuario, ahora más visibles (bloque primero, 2 columnas grandes con reproductor y pie descriptivo) y mosaico de fotos debajo.

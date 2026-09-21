@@ -20,6 +20,42 @@ export default function Gallery() {
         />
 
         <Reveal>
+          <div className="flex items-center gap-3 mb-8">
+            <Play className="w-5 h-5 text-copper" />
+            <h3 className="font-serif text-3xl md:text-4xl">Vídeos del criadero</h3>
+          </div>
+        </Reveal>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {VIDEOS.map((v, i) => (
+            <Reveal key={v.src} delay={0.08 * i}>
+              <div className="rounded-2xl overflow-hidden bg-ink border border-line">
+                <div className="aspect-video md:aspect-[16/10]" data-testid={`gallery-item-video-${i + 1}`}>
+                  <video
+                    src={v.src}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="p-5 bg-bone">
+                  <h4 className="font-serif text-xl md:text-2xl font-medium">{v.title}</h4>
+                  <p className="mt-1 text-sm text-muted-foreground">{v.caption}</p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal className="mt-14 md:mt-16">
+          <div className="flex items-center gap-3 mb-8">
+            <Camera className="w-5 h-5 text-copper" />
+            <h3 className="font-serif text-3xl md:text-4xl">Fotografías de la camada</h3>
+          </div>
+        </Reveal>
+
+        <Reveal>
           <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[160px] md:auto-rows-[210px] gap-3">
             {GALLERY_PHOTOS.map((p, i) => (
               <figure
@@ -37,37 +73,6 @@ export default function Gallery() {
             ))}
           </div>
         </Reveal>
-
-        <Reveal className="mt-16 md:mt-20">
-          <div className="flex items-center gap-3 mb-8">
-            <Play className="w-5 h-5 text-copper" />
-            <h3 className="font-serif text-3xl md:text-4xl">Vídeos del criadero</h3>
-            <Camera className="w-5 h-5 text-muted-foreground" />
-          </div>
-        </Reveal>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {VIDEOS.map((v, i) => (
-            <Reveal key={v.id} delay={0.08 * i}>
-              <div className="rounded-2xl overflow-hidden bg-bone border border-line">
-                <div className="aspect-video" data-testid={`gallery-item-video-${i + 1}`}>
-                  <iframe
-                    src={`https://www.youtube.com/embed/${v.id}`}
-                    title={v.title}
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="h-full w-full"
-                  />
-                </div>
-                <div className="p-5">
-                  <h4 className="font-serif text-xl font-medium">{v.title}</h4>
-                  <p className="mt-1 text-sm text-muted-foreground">{v.caption}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
       </div>
     </section>
   );
