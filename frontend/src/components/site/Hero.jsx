@@ -5,7 +5,7 @@ import { WA_DEFAULT_MSG, waLink, scrollToId } from "@/lib/site";
 import { MaskLine, WaButton, EASE } from "@/components/site/Shared";
 
 const HERO_IMG =
-  "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/739c0de4d48906996867029bc185b031c0dd941b894d8721fcc204ef93c1d832.jpeg";
+  "https://images.unsplash.com/photo-1511816882713-c794694b5a5f?q=80&w=1800&auto=format&fit=crop";
 
 const STATS = [
   { value: "24–48 h", label: "Entrega en toda España según zona", testid: "hero-stat-shipping" },
@@ -49,7 +49,7 @@ export default function Hero() {
           >
             <img
               src={HERO_IMG}
-              alt="Pastor Alemán adulto en el recinto del criadero"
+              alt="Pastor Alemán adulto entre rocas al atardecer"
               className="absolute inset-0 h-full w-full object-cover animate-kenburns"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent" />
@@ -121,7 +121,7 @@ export default function Hero() {
           >
             <motion.img
               src={HERO_IMG}
-              alt="Pastor Alemán adulto en el recinto del criadero"
+              alt="Pastor Alemán adulto entre rocas al atardecer"
               style={{ y: imgY }}
               className="absolute inset-0 h-[120%] w-full object-cover animate-kenburns"
             />

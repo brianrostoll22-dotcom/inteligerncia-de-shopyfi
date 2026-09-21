@@ -64,3 +64,6 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 
 ## Iteración 8 (2026-09-21) — feedback del usuario
 - Unificado el fondo de todas las fotos de perros de la web con el fondo de la foto de referencia del usuario (valla de cañas + césped artificial, estilo colita.es): 6 cachorros del catálogo, foto de la camada completa, foto del hero (adulto) y 5 fotos de la galería, todo editado con IA (gemini-3.1-flash-image) con acabado natural de foto hecha con móvil normal (sin bokeh ni pulido de estudio). La foto "aun no listos" (foto real del usuario) se mantiene intacta. Verificado en hero, catálogo y galería.
+
+## Iteración 9 (2026-09-21) — corrección de bug reportada
+- El usuario aclaró que la foto de portada (hero, adulto en el paisaje) no debía tocarse: restaurado el HERO_IMG original (unsplash photo-1511816882713, adulto entre rocas al atardecer) para escritorio y móvil. El resto de fotos mantiene el fondo del criadero. La copia de esa foto dentro de la galería conserva el fondo del criadero (pendiente de confirmar si el usuario también la quiere original). Verificado por captura: el hero sirve la imagen original.
