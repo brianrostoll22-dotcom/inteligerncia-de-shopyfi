@@ -1,0 +1,186 @@
+{
+  "project_title": "Criadero Rías Baixas - Especialistas en Pastor Alemán (Vigo, España)",
+  "app_type": "marketing_site",
+  "theme": {
+    "primary_archetype": "ORGANIC_LUXURY_AND_PRECISION",
+    "mode": "light",
+    "color_palette": {
+      "bg_primary": "#FAF9F5",
+      "bg_surface": "#FFFFFF",
+      "bg_card": "#F3F0E6",
+      "text_main": "#1C1D1A",
+      "text_muted": "#52544D",
+      "border": "#E2DEC9",
+      "accent_amber": "#C87D20",
+      "accent_amber_hover": "#A86514",
+      "accent_forest": "#2D4A3E",
+      "whatsapp_green": "#25D366",
+      "whatsapp_green_dark": "#128C7E",
+      "badge_gold": "#DAA520"
+    },
+    "typography": {
+      "heading_font": "Cormorant Garamond, Serif",
+      "body_font": "Plus Jakarta Sans, sans-serif",
+      "mono_font": "JetBrains Mono, monospace",
+      "google_fonts_import": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
+    }
+  },
+  "key_features_and_content": {
+    "fixed_price": "450 €",
+    "location": "Vigo, Galicia, España",
+    "whatsapp_phone": "+34612345678",
+    "whatsapp_default_message": "¡Hola! Estoy interesado en un cachorro de Pastor Alemán (450€) del Criadero en Vigo.",
+    "spanish_animal_welfare_compliance": "Cumplimiento estricto de la Ley de Bienestar Animal en España. Entrega garantizada con microchip homologado, cartilla veterinaria oficial, vacunas obligatorias al día y desparasitación.",
+    "hand_delivery_policy": "Los cachorros pueden recogerse presencialmente en el centro especializado de Vigo o solicitar envío a domicilio. El envío se realiza junto a un miembro de nuestro equipo profesional que explicará todos los cuidados antes de la entrega formal.",
+    "delivery_timeframe": "Entrega en 24 horas o 48 horas según la zona geográfica en España (a consultar por WhatsApp)."
+  },
+  "media_assets": {
+    "puppy_images": [
+      {
+        "id": "puppy-1",
+        "name": "Thor de Rías Baixas",
+        "gender": "Macho",
+        "lineage": "Línea de Belleza y Compañía",
+        "age": "2 Meses",
+        "url": "https://images.unsplash.com/photo-1607034145556-36a4aefc3b97?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Cachorro de Pastor Alemán negro y fuego Thor"
+      },
+      {
+        "id": "puppy-2",
+        "name": "Kira de Rías Baixas",
+        "gender": "Hembra",
+        "lineage": "Línea de Trabajo y Trabajo Deportivo",
+        "age": "2.5 Meses",
+        "url": "https://images.unsplash.com/photo-1655986910739-daa90b28095a?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Cachorra de Pastor Alemán sentada Kira"
+      },
+      {
+        "id": "puppy-3",
+        "name": "Ares de Rías Baixas",
+        "gender": "Macho",
+        "lineage": "Línea de Belleza Clásica",
+        "age": "2 Meses",
+        "url": "https://images.unsplash.com/photo-1648495333000-32689c4ead62?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Cachorro de Pastor Alemán recostado Ares"
+      },
+      {
+        "id": "puppy-4",
+        "name": "Luna de Rías Baixas",
+        "gender": "Hembra",
+        "lineage": "Línea de Compañía y Protección Familiar",
+        "age": "2 Meses",
+        "url": "https://images.pexels.com/photos/39112017/pexels-photo-39112017.jpeg?auto=compress&cs=tinysrgb&q=85",
+        "alt": "Cachorra Luna relajada en el césped"
+      },
+      {
+        "id": "puppy-5",
+        "name": "Max de Rías Baixas",
+        "gender": "Macho",
+        "lineage": "Línea de Trabajo Tradicional",
+        "age": "2.5 Meses",
+        "url": "https://images.unsplash.com/photo-1619980296991-5c0d64b23950?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Cachorro Max de Pastor Alemán"
+      }
+    ],
+    "parents_images": [
+      {
+        "name": "Rex vom Haus (Padre - Campeón de Belleza Galicia)",
+        "url": "https://images.unsplash.com/photo-1605725657590-b2cf0d31b1a5?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Padre Pastor Alemán Campeón"
+      },
+      {
+        "name": "Bella de Galicia (Madre - Excelente Pedigrí Real Sociedad Canina)",
+        "url": "https://images.unsplash.com/photo-1662939092439-67d3d9d733b4?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Madre Pastor Alemán Bella"
+      },
+      {
+        "name": "Odin de Vigo (Padre - Línea de Trabajo Sanitaria)",
+        "url": "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Padre Pastor Alemán de Trabajo"
+      }
+    ],
+    "location_images": [
+      {
+        "name": "Instalaciones del Criadero en Vigo",
+        "url": "https://images.unsplash.com/photo-1594232972256-e21a1c37e731?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Entorno natural del criadero en la costa de Vigo"
+      },
+      {
+        "name": "Bahía y Entorno Natural de Vigo",
+        "url": "https://images.pexels.com/photos/29833394/pexels-photo-29833394.jpeg?auto=compress&cs=tinysrgb&q=85",
+        "alt": "Paisaje costero de Vigo"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "header",
+      "name": "Navegación Superior Glassmorphism",
+      "components": ["Logo del Criadero con escudo", "Menú de Navegación", "Insignia de Garantía Vigo", "Boton CTA WhatsApp Directo"],
+      "data_testids": ["nav-logo", "nav-puppies-link", "nav-litters-link", "nav-facilities-link", "nav-shipping-link", "nav-faq-link", "nav-whatsapp-cta"]
+    },
+    {
+      "id": "hero",
+      "name": "Hero Section - Impacto Editorial y Confianza",
+      "description": "Cabecera con estética de revista cinemática, distintivo 'Criadero Especializado Registrado en Vigo', precio prominente 450€, botón de contacto inmediato y métricas en vivo (Cachorros listos, 100% Garantía Veterinaria, Envíos 24-48h).",
+      "data_testids": ["hero-title", "hero-subtitle", "hero-price-tag", "hero-whatsapp-button", "hero-visit-button", "hero-stat-price", "hero-stat-vaccines", "hero-stat-shipping"]
+    },
+    {
+      "id": "puppies-catalog",
+      "name": "Catálogo Interactivos de Cachorros Disponibles (450€)",
+      "description": "Filtros por Género y Línea, tarjetas enriquecidas con ficha médica, fotos ampliables, vídeo en bucle, estado 'Disponible para Entrega Immediate' y botón personalizado para reservar en WhatsApp.",
+      "data_testids": ["puppies-section-title", "filter-gender-all", "filter-gender-males", "filter-gender-females", "puppy-card-thor", "puppy-card-kira", "puppy-card-ares", "puppy-card-luna", "puppy-card-max", "puppy-details-modal", "puppy-whatsapp-reserve-btn"]
+    },
+    {
+      "id": "litters-and-parents",
+      "name": "Camadas y Genética (Sementales y Hembras Madre)",
+      "description": "Exposición de padres certificados, radiografías de displasia (HD/ED libre), árbol genealógico resumido e información de camadas activas y futuras.",
+      "data_testids": ["litters-section-title", "parent-card-rex", "parent-card-bella", "parent-card-odin", "pedigree-modal-trigger"]
+    },
+    {
+      "id": "shipping-and-legal",
+      "name": "Entrega Personalizada en Toda España y Ley de Bienestar Animal",
+      "description": "Modulo explicativo paso a paso sobre el cumplimiento legal en España, acompañamiento del equipo en la entrega a domicilio, microchip oficial, vacunas obligatorias al día y plazos de 24h a 48h.",
+      "data_testids": ["shipping-section-title", "shipping-step-chip", "shipping-step-vaccines", "shipping-step-hand-delivery", "shipping-step-timeframe", "zone-calculator-input", "zone-calculator-btn"]
+    },
+    {
+      "id": "vigo-center",
+      "name": "Visita Presencial a Nuestro Centro en Vigo",
+      "description": "Invitación a conocer las instalaciones físicas en Vigo, mapa explicativo, horario de visitas y formulario/botón para agendar cita previa.",
+      "data_testids": ["vigo-center-title", "vigo-address-badge", "vigo-schedule-info", "vigo-appointment-whatsapp-btn"]
+    },
+    {
+      "id": "media-gallery",
+      "name": "Galería Multi-Media de Vídeos y Momentos",
+      "description": "Grilla dinámica con reproductor modal de vídeo para ver el comportamiento, socialización y juego de los cachorros.",
+      "data_testids": ["gallery-section-title", "gallery-item-video-1", "gallery-item-photo-1", "gallery-item-photo-2", "video-modal-player"]
+    },
+    {
+      "id": "faq",
+      "name": "Preguntas Frecuentes y Guía de Adopción",
+      "description": "Acordeón interactivo respondiendo a dudas sobre pago, transporte legal, primera vacuna, pienso de iniciación y documento de cesión.",
+      "data_testids": ["faq-section-title", "faq-item-1", "faq-item-2", "faq-item-3", "faq-item-4", "faq-item-5"]
+    },
+    {
+      "id": "floating-whatsapp-and-footer",
+      "name": "Botón Flotante WhatsApp y Pie de Página",
+      "description": "Botón flotante en esquina con pulso de atención, pie de página completo con aviso de ley de bienestar animal, contacto en Vigo, horarios y enlaces.",
+      "data_testids": ["floating-whatsapp-btn", "footer-logo", "footer-legal-notice", "footer-phone-link", "footer-vigo-location"]
+    }
+  ],
+  "instructions_to_main_agent": [
+    "Asegurar que todo el contenido esté en Español neutro/castellano elegante con tono profesional, cercano y de extrema confianza.",
+    "El precio de 450 € debe ser muy visible y transparente en las tarjetas de los cachorros y en la oferta principal.",
+    "Todos los botones de compra/reserva deben derivar a WhatsApp (wa.me) con un texto predeterminado específico para cada cachorro.",
+    "Destacar con fuerza la legalidad según la normativa española de bienestar animal: entrega con microchip, vacunas al día, cartilla sanitaria y entrega en mano por personal capacitado.",
+    "Añadir interactivity refinada: modales para ver detalles de cada cachorro, reproductor de vídeo simulado para las camadas, calculadora de plazo de entrega por provincia (24h o 48h) y selector de género.",
+    "Usar Sonner para notificaciones cuando el usuario copia el número de WhatsApp o reserva cita.",
+    "Todos los elementos interactivos e informativos clave DEBEN incluir sus data-testid correspondientes indicados en la especificación."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": {
+    "data_testid_requirement": "MANDATORY on all buttons, cards, links, inputs, modals and status badges.",
+    "typography": "Use Google Fonts import for Cormorant Garamond for headings and Plus Jakarta Sans for body text.",
+    "smooth_scrolling": "Enable smooth scroll behavior for anchor links.",
+    "contrast": "Maintain AA contrast standards for all text over warm cream and white backgrounds."
+  }
+}
