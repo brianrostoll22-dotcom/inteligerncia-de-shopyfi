@@ -41,3 +41,6 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 - Quitado el bloque "Precio único" del hero y toda mención de "precio único" (marquee, footer): el 450 € ahora solo se muestra junto a las fotos de los cachorros (badge sobre la imagen + ficha modal).
 - Entrega mucho más visible: chip "Entrega en toda España · 24–48 h" en el hero, nueva franja DeliveryStrip bajo el marquee (entrega 24–48 h, microchip+vacunas, entrega acompañada, CTA "Cómo funciona"), tiles 24 h / 48 h con nota "se confirma por WhatsApp", stats del hero enfocadas a entrega/Vigo, y línea de entrega en cada tarjeta de cachorro.
 - Móvil mejorado: ficha modal con imagen 16/10 y scroll interno (max-h 92vh), CTAs apilados, sin overflow horizontal (verificado 390 px).
+
+## Iteración 3 (2026-09-21) — feedback del usuario
+- Móvil: la foto del hero ahora aparece en la primera pantalla, entre el titular y la descripción, con la insignia "Camada lista para entrega". En escritorio el hero de dos columnas no cambia.

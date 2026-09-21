@@ -41,6 +41,23 @@ export default function Hero() {
             <MaskLine delay={0.51}>patas.</MaskLine>
           </h1>
 
+          <motion.div
+            initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0.4 }}
+            animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
+            transition={{ duration: 1.1, delay: 0.55, ease: EASE }}
+            className="lg:hidden mt-6 relative h-[34vh] rounded-2xl overflow-hidden border border-line"
+          >
+            <img
+              src={HERO_IMG}
+              alt="Pastor Alemán adulto entre rocas al atardecer"
+              className="absolute inset-0 h-full w-full object-cover animate-kenburns"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent" />
+            <div className="absolute bottom-3 left-3 rounded-full bg-bone/90 backdrop-blur px-3.5 py-1.5 text-xs font-semibold text-ink">
+              Camada lista para entrega
+            </div>
+          </motion.div>
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,7 +112,7 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        <div className="lg:col-span-5 relative">
+        <div className="hidden lg:block lg:col-span-5 relative">
           <motion.div
             initial={{ clipPath: "inset(100% 0 0 0)" }}
             animate={{ clipPath: "inset(0% 0 0 0)" }}
