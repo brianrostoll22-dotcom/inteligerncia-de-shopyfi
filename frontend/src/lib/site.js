@@ -40,7 +40,7 @@ export const PUPPIES = [
     line: "Línea de belleza",
     coat: "Manto negro y fuego",
     temper: "Sociable, curioso y muy apegado a la familia.",
-    img: "https://images.unsplash.com/photo-1607034145556-36a4aefc3b97?q=80&w=1200&auto=format&fit=crop",
+    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/ily50q7f_10.jpg",
   },
   {
     id: "kira",
@@ -50,7 +50,7 @@ export const PUPPIES = [
     line: "Línea de trabajo",
     coat: "Manto dorsal clásico",
     temper: "Atenta y equilibrada, con unas ganas enormes de aprender.",
-    img: "https://images.unsplash.com/photo-1655986910739-daa90b28095a?q=80&w=1200&auto=format&fit=crop",
+    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/4omrruky_11.jpg",
   },
   {
     id: "ares",
@@ -70,7 +70,7 @@ export const PUPPIES = [
     line: "Compañía y protección",
     coat: "Manto grisáceo",
     temper: "Dulce y confiada, perfecta para familias con niños.",
-    img: "https://images.pexels.com/photos/32299573/pexels-photo-32299573.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/ayx1tt0x_12.jpg",
   },
   {
     id: "max",
@@ -80,7 +80,7 @@ export const PUPPIES = [
     line: "Línea de trabajo tradicional",
     coat: "Manto oscuro",
     temper: "Enérgico, valiente y siempre en marcha.",
-    img: "https://images.unsplash.com/photo-1619980296991-5c0d64b23950?q=80&w=1200&auto=format&fit=crop",
+    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/3l31znhm_13.jpg",
   },
   {
     id: "roxy",
@@ -90,7 +90,7 @@ export const PUPPIES = [
     line: "Belleza y compañía",
     coat: "Manto negro y fuego",
     temper: "Traviesa y cariñosa, siempre pendiente de ti.",
-    img: "https://images.unsplash.com/photo-1647350299272-343e64b0ad17?q=80&w=1200&auto=format&fit=crop",
+    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/aan4cns3_14.jpg",
   },
 ];
 

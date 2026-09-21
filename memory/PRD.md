@@ -44,3 +44,6 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 
 ## Iteración 3 (2026-09-21) — feedback del usuario
 - Móvil: la foto del hero ahora aparece en la primera pantalla, entre el titular y la descripción, con la insignia "Camada lista para entrega". En escritorio el hero de dos columnas no cambia.
+
+## Iteración 4 (2026-09-21) — feedback del usuario
+- Catálogo: sustituidas las fotos de Thor, Kira, Luna, Max y Roxy por las 5 fotos reales enviadas por el usuario (assets 10–14). Ares conserva su foto original. Verificado que las 6 imágenes cargan.
