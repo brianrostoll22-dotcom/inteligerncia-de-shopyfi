@@ -12,7 +12,7 @@ export default function Faq() {
     <section id="faq" className="py-24 md:py-32 scroll-mt-20">
       <div className="mx-auto max-w-5xl px-5 md:px-8">
         <SectionHead
-          index="06"
+          index="07"
           eyebrow="Guía de adopción"
           title={
             <>

@@ -27,6 +27,7 @@ export const NAV_LINKS = [
   { label: "Cachorros", href: "#cachorros" },
   { label: "Camadas", href: "#camadas" },
   { label: "Entrega", href: "#entrega" },
+  { label: "Seguimiento", href: "#seguimiento" },
   { label: "El criadero", href: "#criadero" },
   { label: "FAQ", href: "#faq" },
 ];

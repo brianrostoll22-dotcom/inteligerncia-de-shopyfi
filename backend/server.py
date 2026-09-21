@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -37,6 +37,14 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+class TrackingInfo(BaseModel):
+    code: str
+    puppy: str
+    destination: str
+    status: str
+    progress: int
+    eta: str
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
@@ -66,6 +74,16 @@ async def get_status_checks():
     
     return status_checks
 
+@api_router.get("/track/{code}", response_model=TrackingInfo)
+async def track_delivery(code: str):
+    doc = await db.deliveries.find_one(
+        {"code": code.strip().upper()},
+        {"_id": 0, "code": 1, "puppy": 1, "destination": 1, "status": 1, "progress": 1, "eta": 1},
+    )
+    if not doc:
+        raise HTTPException(status_code=404, detail="Código de seguimiento no encontrado")
+    return TrackingInfo(**doc)
+
 # Include the router in the main app
 app.include_router(api_router)
 
@@ -83,6 +101,21 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+@app.on_event("startup")
+async def seed_deliveries():
+    await db.deliveries.update_one(
+        {"code": "PA-VIGO-7F3K"},
+        {"$setOnInsert": {
+            "code": "PA-VIGO-7F3K",
+            "puppy": "Thor",
+            "destination": "Madrid",
+            "status": "en_camino",
+            "progress": 62,
+            "eta": "Hoy, entre las 16:00 y las 18:00 h",
+        }},
+        upsert=True,
+    )
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

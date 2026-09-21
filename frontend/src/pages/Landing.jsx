@@ -10,6 +10,7 @@ import Manifesto from "@/components/site/Manifesto";
 import Puppies from "@/components/site/Puppies";
 import Gallery from "@/components/site/Gallery";
 import Delivery from "@/components/site/Delivery";
+import DeliveryTracking from "@/components/site/DeliveryTracking";
 import VigoCenter from "@/components/site/VigoCenter";
 import Faq from "@/components/site/Faq";
 import Footer from "@/components/site/Footer";
@@ -44,6 +45,7 @@ export default function Landing() {
         <Puppies />
         <Gallery />
         <Delivery />
+        <DeliveryTracking />
         <VigoCenter />
         <Faq />
       </main>

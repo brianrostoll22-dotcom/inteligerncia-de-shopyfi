@@ -55,3 +55,9 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 
 ## Iteración 6 (2026-09-21) — feedback del usuario
 - Fotos de Thor, Kira, Luna, Max y Roxy editadas con IA (gemini-3.1-flash-image) para quitarles el look profesional: fondo sin desenfoque/bokeh, colores de luz natural y acabado de foto casera con móvil, manteniendo idéntico al cachorro. Ares sigue con su foto original a petición del usuario. Verificado que las 6 imágenes cargan en el catálogo.
+
+## Iteración 7 (2026-09-21) — feedback del usuario
+- Nueva sección "Ver el estado de mi entrega" (#seguimiento, entre Entrega y El criadero; enlace nuevo en el nav): explica que las furgonetas llevan localizador GPS y que el número de seguimiento se facilita por WhatsApp al hacer el pedido. Input de código + panel oscuro con ruta Vigo→destino, furgoneta animada según progreso, 4 pasos de estado, ETA y auto-refresco cada 20 s. Error por código inválido vía toast.
+- Backend: `GET /api/track/{code}` (FastAPI + MongoDB, colección `deliveries`, semilla en startup). Código demo: PA-VIGO-7F3K (Thor, rumbo a Madrid, 62%). 404 si no existe; acepta minúsculas/espacios.
+- Secciones renumeradas: Entrega 04, Seguimiento 05, El criadero 06, FAQ 07.
+- Verificado: curl (200 válido, 404 inválido, minúsculas OK), panel en escritorio y móvil sin overflow, toast de error.

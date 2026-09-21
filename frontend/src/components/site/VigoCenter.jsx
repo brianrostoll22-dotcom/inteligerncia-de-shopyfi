@@ -7,7 +7,7 @@ export default function VigoCenter() {
     <section id="criadero" className="py-24 md:py-32 bg-sand scroll-mt-20">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <SectionHead
-          index="05"
+          index="06"
           eyebrow="El criadero"
           title={
             <>
