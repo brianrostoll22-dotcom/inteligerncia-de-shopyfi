@@ -80,7 +80,7 @@ export default function Footer() {
             conforme a la normativa española de bienestar animal: entrega con microchip y vacunas
             obligatorias.
           </p>
-          <p>Precio por cachorro: 450 € · Entrega 24–48 h según zona</p>
+          <p>Entrega en 24–48 h según zona · Consulta tu plazo por WhatsApp</p>
         </div>
       </div>
     </footer>

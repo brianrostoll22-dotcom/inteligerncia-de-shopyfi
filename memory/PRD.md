@@ -36,3 +36,8 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 - Número de WhatsApp definitivo pendiente (placeholder). Cambiar en `site.js`.
 - Fotos de stock (Unsplash/Pexels) y vídeos embebidos de YouTube como material de demostración.
 - Backlog: formulario de reserva con backend, gestión de camadas en MongoDB, galería con vídeos propios, SEO/OG por cachorro.
+
+## Iteración 2 (2026-09-21) — feedback del usuario
+- Quitado el bloque "Precio único" del hero y toda mención de "precio único" (marquee, footer): el 450 € ahora solo se muestra junto a las fotos de los cachorros (badge sobre la imagen + ficha modal).
+- Entrega mucho más visible: chip "Entrega en toda España · 24–48 h" en el hero, nueva franja DeliveryStrip bajo el marquee (entrega 24–48 h, microchip+vacunas, entrega acompañada, CTA "Cómo funciona"), tiles 24 h / 48 h con nota "se confirma por WhatsApp", stats del hero enfocadas a entrega/Vigo, y línea de entrega en cada tarjeta de cachorro.
+- Móvil mejorado: ficha modal con imagen 16/10 y scroll interno (max-h 92vh), CTAs apilados, sin overflow horizontal (verificado 390 px).

@@ -29,7 +29,7 @@ export default function Puppies() {
               su <em className="italic text-copper">nuevo hogar</em>
             </>
           }
-          desc="Cada cachorro se entrega con microchip, vacunas obligatorias y cartilla veterinaria. Precio único: 450 €."
+          desc="Cada cachorro se entrega con microchip, vacunas obligatorias y cartilla veterinaria. Entrega en 24–48 h según tu zona."
           right={
             <div className="flex gap-2">
               {FILTERS.map((f) => (
@@ -88,6 +88,9 @@ export default function Puppies() {
                       <p className="mt-2 text-sm text-muted-foreground">
                         {p.age} · {p.line}
                       </p>
+                      <p className="mt-1.5 text-xs text-muted-foreground/90">
+                        Entrega en 24–48 h · Microchip y vacunas incluidos
+                      </p>
                     </div>
                     <span className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-copper">
                       Disponible
@@ -115,11 +118,11 @@ export default function Puppies() {
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent
           data-testid="puppy-details-modal"
-          className="max-w-3xl p-0 overflow-hidden gap-0 bg-bone"
+          className="max-w-3xl p-0 overflow-hidden gap-0 bg-bone max-h-[92vh] overflow-y-auto sm:max-h-[85vh]"
         >
           {selected && (
             <div className="grid sm:grid-cols-2">
-              <div className="relative aspect-[4/5] sm:aspect-auto sm:h-full min-h-[280px]">
+              <div className="relative aspect-[16/10] sm:aspect-auto sm:h-full min-h-[220px]">
                 <img
                   src={selected.img}
                   alt={`Cachorro de Pastor Alemán ${selected.name}`}
@@ -169,13 +172,6 @@ export default function Puppies() {
               </div>
             </div>
           )}
-          <button
-            onClick={() => setSelected(null)}
-            aria-label="Cerrar ficha"
-            className="absolute top-4 right-4 rounded-full bg-bone/90 p-2 text-ink hover:bg-bone transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
         </DialogContent>
       </Dialog>
     </section>

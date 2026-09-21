@@ -2,6 +2,19 @@ import { BadgeCheck, Syringe, UserCheck, Clock } from "lucide-react";
 import { WA_DEFAULT_MSG, waLink } from "@/lib/site";
 import { SectionHead, Reveal, WaButton } from "@/components/site/Shared";
 
+const ZONES = [
+  {
+    time: "24 h",
+    text: "Para las zonas más cercanas: el cachorro llega al día siguiente de salir del criadero.",
+    testid: "zone-24h",
+  },
+  {
+    time: "48 h",
+    text: "Para el resto de zonas de la península: el cachorro llega como máximo al segundo día.",
+    testid: "zone-48h",
+  },
+];
+
 const STEPS = [
   {
     icon: BadgeCheck,
@@ -62,7 +75,27 @@ export default function Delivery() {
           ))}
         </div>
 
-        <Reveal className="mt-14">
+        <Reveal className="mt-6">
+          <div className="grid sm:grid-cols-2 gap-6">
+            {ZONES.map((z) => (
+              <div
+                key={z.time}
+                data-testid={z.testid}
+                className="rounded-2xl border border-line bg-sand p-6 md:p-7 flex items-center gap-5"
+              >
+                <span className="font-serif text-4xl md:text-5xl font-semibold text-forest shrink-0">
+                  {z.time}
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed">{z.text}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-sm text-muted-foreground/90 text-center sm:text-left">
+            Tu plazo exacto (24 h o 48 h) se confirma por WhatsApp antes de cerrar la reserva.
+          </p>
+        </Reveal>
+
+        <Reveal className="mt-10">
           <div className="rounded-3xl bg-ink text-bone p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-8 justify-between">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-copper">

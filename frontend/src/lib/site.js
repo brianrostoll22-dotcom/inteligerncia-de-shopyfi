@@ -180,5 +180,5 @@ export const MARQUEE_ITEMS = [
   "Entrega en 24–48 h según zona",
   "Envío acompañado por nuestro equipo",
   "Centro especializado en Vigo",
-  "Precio único · 450 €",
+  "Visítanos con cita previa",
 ];

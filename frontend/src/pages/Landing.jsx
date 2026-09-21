@@ -5,6 +5,7 @@ import { setLenis } from "@/lib/site";
 import Nav from "@/components/site/Nav";
 import Hero from "@/components/site/Hero";
 import Marquee from "@/components/site/Marquee";
+import DeliveryStrip from "@/components/site/DeliveryStrip";
 import Manifesto from "@/components/site/Manifesto";
 import Puppies from "@/components/site/Puppies";
 import Gallery from "@/components/site/Gallery";
@@ -38,6 +39,7 @@ export default function Landing() {
       <main>
         <Hero />
         <Marquee />
+        <DeliveryStrip />
         <Manifesto />
         <Puppies />
         <Gallery />

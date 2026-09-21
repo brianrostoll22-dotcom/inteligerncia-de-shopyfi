@@ -8,9 +8,9 @@ const HERO_IMG =
   "https://images.unsplash.com/photo-1511816882713-c794694b5a5f?q=80&w=1800&auto=format&fit=crop";
 
 const STATS = [
-  { value: "450 €", label: "Precio por cachorro", testid: "hero-stat-price" },
-  { value: "24–48 h", label: "Entrega según zona", testid: "hero-stat-shipping" },
+  { value: "24–48 h", label: "Entrega en toda España según zona", testid: "hero-stat-shipping" },
   { value: "Microchip + vacunas", label: "Incluidos en la entrega", testid: "hero-stat-vaccines" },
+  { value: "Vigo", label: "Visitas al centro con cita previa", testid: "hero-stat-visit" },
 ];
 
 export default function Hero() {
@@ -58,15 +58,22 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 0.88, ease: EASE }}
             className="mt-9 flex flex-wrap items-center gap-4"
           >
-            <div
-              data-testid="hero-price-tag"
-              className="inline-flex flex-col rounded-2xl border border-line bg-sand px-5 py-3"
+            <a
+              href="#entrega"
+              data-testid="hero-delivery-chip"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToId("#entrega");
+              }}
+              className="inline-flex flex-col rounded-2xl border border-line bg-sand px-5 py-3 hover:border-copper/60 transition-colors"
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                Precio único
+                Entrega en toda España
               </span>
-              <span className="font-serif text-3xl font-semibold leading-none mt-1">450 €</span>
-            </div>
+              <span className="font-serif text-2xl md:text-3xl font-semibold leading-none mt-1">
+                24–48 h
+              </span>
+            </a>
             <WaButton
               href={waLink(WA_DEFAULT_MSG)}
               testid="hero-whatsapp-button"
