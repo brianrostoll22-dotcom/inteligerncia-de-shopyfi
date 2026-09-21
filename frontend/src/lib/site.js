@@ -41,7 +41,7 @@ export const PUPPIES = [
     line: "Línea de belleza",
     coat: "Manto negro y fuego",
     temper: "Sociable, curioso y muy apegado a la familia.",
-    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/c77d461f4a7c179276eb44fae54affe0d2ca4ed801cdfa43ecf5d1e02218dbf0.jpeg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/f3eeac2a186c8ee1457a4623555a9c36a388c833940e1b03c88e6965f983d646.jpeg",
   },
   {
     id: "kira",
@@ -51,7 +51,7 @@ export const PUPPIES = [
     line: "Línea de trabajo",
     coat: "Manto dorsal clásico",
     temper: "Atenta y equilibrada, con unas ganas enormes de aprender.",
-    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/46c07e1f781db8634afb1fd09ef3f6fa1c572465e0a335a6c6ec9de5d20be684.jpeg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/a205ac33adc6d4f3d3407f5aa14c68a6ecf502dccd7afb8d1dfde2bd5eaf275d.jpeg",
   },
   {
     id: "ares",
@@ -61,7 +61,7 @@ export const PUPPIES = [
     line: "Línea de belleza clásica",
     coat: "Negro y fuego intenso",
     temper: "Tranquilo, cariñoso y de lo más observador.",
-    img: "https://images.unsplash.com/photo-1648495333000-32689c4ead62?q=80&w=1200&auto=format&fit=crop",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/1835e5eff5b5a4d38905e60f34b132d5a4249f0a0b08bcc8dbd7f1a1277858a0.jpeg",
   },
   {
     id: "luna",
@@ -71,7 +71,7 @@ export const PUPPIES = [
     line: "Compañía y protección",
     coat: "Manto grisáceo",
     temper: "Dulce y confiada, perfecta para familias con niños.",
-    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/5e5f089d64d679b1d3c4161209aa81ef795c4a2395052c31664345e660465e9c.jpeg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/c1f1319a8aa2c901258d26164b87c456981bb0c4b9e7b6721e3fa4b065e1b348.jpeg",
   },
   {
     id: "max",
@@ -81,7 +81,7 @@ export const PUPPIES = [
     line: "Línea de trabajo tradicional",
     coat: "Manto oscuro",
     temper: "Enérgico, valiente y siempre en marcha.",
-    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/fc90f53c95eab698d414a53539a20b4640f7aa8b52d68a8797c2f3a2bc170951.jpeg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/9aef70b55509b2253d6050e79f9d02de841218e66001b7f37ae54097ceb84b75.jpeg",
   },
   {
     id: "roxy",
@@ -91,50 +91,50 @@ export const PUPPIES = [
     line: "Belleza y compañía",
     coat: "Manto negro y fuego",
     temper: "Traviesa y cariñosa, siempre pendiente de ti.",
-    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/8cb4445f51cbf0d4ea2c2ce56b19937a52c8240ba08099fc238b5b019c93aa49.jpeg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/605fe56055ecb9c28906049cd703b16a9910bacdccf5c5e356cf60a21479e368.jpeg",
   },
 ];
 
 export const GALLERY_PHOTOS = [
   {
-    src: "https://images.pexels.com/photos/20600678/pexels-photo-20600678.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Primer plano de un cachorro de Pastor Alemán",
+    src: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/5c8604a9a86c392803f85a0d8a3afc0de0803aeb80a9c4c620bb32e05adaa735.jpeg",
+    alt: "Primer plano de un cachorro de Pastor Alemán ante la valla de cañas del criadero",
     className: "col-span-2 row-span-2",
   },
   {
-    src: "https://images.unsplash.com/photo-1655986909840-1dbc7e7fb405?q=80&w=1200&auto=format&fit=crop",
-    alt: "Cachorro de Pastor Alemán con collar",
+    src: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/083dbebf0617e6576fd440f4ebb59118786176e300b0d76df98f3db04e296875.jpeg",
+    alt: "Cachorro de Pastor Alemán con collar en el recinto del criadero",
     className: "",
   },
   {
-    src: "https://images.unsplash.com/photo-1511816882713-c794694b5a5f?q=80&w=1200&auto=format&fit=crop",
-    alt: "Pastor Alemán adulto entre rocas al atardecer",
+    src: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/739c0de4d48906996867029bc185b031c0dd941b894d8721fcc204ef93c1d832.jpeg",
+    alt: "Pastor Alemán adulto en el recinto del criadero",
     className: "row-span-2",
   },
   {
-    src: "https://images.pexels.com/photos/34793851/pexels-photo-34793851.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Camada de cachorros jugando en el campo",
+    src: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/e1a912e1837d04912390d2ff86cc4b6af9ab832c91f5b71cc1a48437a2c21769.jpeg",
+    alt: "Camada de cachorros jugando en el recinto del criadero",
     className: "",
   },
   {
-    src: "https://images.pexels.com/photos/6556744/pexels-photo-6556744.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Pastor Alemán en un prado",
+    src: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/250cb641e6a400f236c5c239e9b5510717f2b5e369e18e2d8e89d1f17c653fda.jpeg",
+    alt: "Pastor Alemán adulto en el jardín del criadero",
     className: "col-span-2",
   },
   {
-    src: "https://images.unsplash.com/photo-1781715631824-5a85f440a40b?q=80&w=1200&auto=format&fit=crop",
-    alt: "Pastor Alemán adulto al aire libre",
+    src: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/cf9acf033356ad5435c742684f13b31ab64b79ff3d00a34d3780ad5dde7f2b88.jpeg",
+    alt: "Pastor Alemán adulto junto a la valla de cañas del criadero",
     className: "",
   },
   {
-    src: "https://images.unsplash.com/photo-1648495333000-32689c4ead62?q=80&w=1200&auto=format&fit=crop",
-    alt: "Cachorro tumbado en la hierba",
+    src: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/1835e5eff5b5a4d38905e60f34b132d5a4249f0a0b08bcc8dbd7f1a1277858a0.jpeg",
+    alt: "Cachorro de Pastor Alemán tumbado en el recinto del criadero",
     className: "",
   },
 ];
 
 export const LITTER_PHOTO =
-  "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/aiezckpo_pastores.png";
+  "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/a758a207c82713337577963b5e767b1d8d5a887bf1f9877500255825744a5d53.jpeg";
 
 export const PUPPIES_SOON = {
   name: "Camada próxima",

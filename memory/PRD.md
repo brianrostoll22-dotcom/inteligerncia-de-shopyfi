@@ -61,3 +61,6 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 - Backend: `GET /api/track/{code}` (FastAPI + MongoDB, colección `deliveries`, semilla en startup). Código demo: PA-VIGO-7F3K (Thor, rumbo a Madrid, 62%). 404 si no existe; acepta minúsculas/espacios.
 - Secciones renumeradas: Entrega 04, Seguimiento 05, El criadero 06, FAQ 07.
 - Verificado: curl (200 válido, 404 inválido, minúsculas OK), panel en escritorio y móvil sin overflow, toast de error.
+
+## Iteración 8 (2026-09-21) — feedback del usuario
+- Unificado el fondo de todas las fotos de perros de la web con el fondo de la foto de referencia del usuario (valla de cañas + césped artificial, estilo colita.es): 6 cachorros del catálogo, foto de la camada completa, foto del hero (adulto) y 5 fotos de la galería, todo editado con IA (gemini-3.1-flash-image) con acabado natural de foto hecha con móvil normal (sin bokeh ni pulido de estudio). La foto "aun no listos" (foto real del usuario) se mantiene intacta. Verificado en hero, catálogo y galería.
