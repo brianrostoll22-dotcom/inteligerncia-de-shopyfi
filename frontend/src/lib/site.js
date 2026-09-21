@@ -40,7 +40,7 @@ export const PUPPIES = [
     line: "Línea de belleza",
     coat: "Manto negro y fuego",
     temper: "Sociable, curioso y muy apegado a la familia.",
-    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/ily50q7f_10.jpg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/c77d461f4a7c179276eb44fae54affe0d2ca4ed801cdfa43ecf5d1e02218dbf0.jpeg",
   },
   {
     id: "kira",
@@ -50,7 +50,7 @@ export const PUPPIES = [
     line: "Línea de trabajo",
     coat: "Manto dorsal clásico",
     temper: "Atenta y equilibrada, con unas ganas enormes de aprender.",
-    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/4omrruky_11.jpg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/46c07e1f781db8634afb1fd09ef3f6fa1c572465e0a335a6c6ec9de5d20be684.jpeg",
   },
   {
     id: "ares",
@@ -70,7 +70,7 @@ export const PUPPIES = [
     line: "Compañía y protección",
     coat: "Manto grisáceo",
     temper: "Dulce y confiada, perfecta para familias con niños.",
-    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/ayx1tt0x_12.jpg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/5e5f089d64d679b1d3c4161209aa81ef795c4a2395052c31664345e660465e9c.jpeg",
   },
   {
     id: "max",
@@ -80,7 +80,7 @@ export const PUPPIES = [
     line: "Línea de trabajo tradicional",
     coat: "Manto oscuro",
     temper: "Enérgico, valiente y siempre en marcha.",
-    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/3l31znhm_13.jpg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/fc90f53c95eab698d414a53539a20b4640f7aa8b52d68a8797c2f3a2bc170951.jpeg",
   },
   {
     id: "roxy",
@@ -90,7 +90,7 @@ export const PUPPIES = [
     line: "Belleza y compañía",
     coat: "Manto negro y fuego",
     temper: "Traviesa y cariñosa, siempre pendiente de ti.",
-    img: "https://customer-assets-jt897jd0.emergentagent.net/job_elite-shepherd-dogs/artifacts/aan4cns3_14.jpg",
+    img: "https://static.prod-images.emergentagent.com/jobs/c2676d7f-6a36-4a36-bb23-99a165b69da8/images/8cb4445f51cbf0d4ea2c2ce56b19937a52c8240ba08099fc238b5b019c93aa49.jpeg",
   },
 ];
 
