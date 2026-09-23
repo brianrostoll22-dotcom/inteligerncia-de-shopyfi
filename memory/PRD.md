@@ -78,3 +78,7 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 - Nueva sección "08 — Guía de la raza" (SeoContent.jsx) con contenido optimizado para búsqueda local/nicho: comprar cachorro en España, precio, adopción responsable, entrega 24-48 h, carácter de la raza, visita al criadero de Vigo + CTA (Ver cachorros / WhatsApp).
 - Un solo H1; jerarquía H2/H3 semántica; imágenes con alt descriptivos; lazy loading; sin overflow.
 - Verificado: HTML externo sirve 4 bloques ld+json + canonical + og/twitter (tras reinicio de WDS), robots 200, sitemap 200, 1 único H1, sección visible en escritorio y móvil sin overflow.
+
+## Iteración 12 (2026-09-23) — "no me encuentro en Google" (causa raíz)
+- CAUSA RAÍZ encontrada: el host de preview envía la cabecera HTTP `x-robots-tag: noindex, nofollow` — Google tiene PROHIBIDO indexar la URL de preview. Ningún cambio de código puede hacer que esta URL aparezca en Google. Para aparecer hay que publicar en dominio propio en producción.
+- SEO on-page ampliado mientras tanto: nuevo bloque "Pastor Alemán en venta en Galicia y toda España" con ciudades (A Coruña, Ourense, Santiago, Madrid, Barcelona, Valencia, Sevilla, Bilbao, Zaragoza, Málaga, Murcia) y bloque "¿Es buena raza para familias con niños?"; lista visible de "Entregamos en:" (14 chips de ciudades) en la sección Entrega. Verificado sin overflow.

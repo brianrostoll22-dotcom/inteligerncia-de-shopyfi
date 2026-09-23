@@ -95,6 +95,26 @@ export default function Delivery() {
           </p>
         </Reveal>
 
+        <Reveal className="mt-8">
+          <div className="flex flex-wrap items-center gap-2" data-testid="delivery-zones-list">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground mr-2">
+              Entregamos en:
+            </span>
+            {[
+              "Vigo", "Pontevedra", "Santiago", "A Coruña", "Ourense", "Madrid",
+              "Barcelona", "Valencia", "Sevilla", "Bilbao", "Zaragoza", "Málaga",
+              "Murcia", "…y toda la península",
+            ].map((city) => (
+              <span
+                key={city}
+                className="rounded-full border border-line bg-sand px-3.5 py-1.5 text-xs font-medium text-ink/70"
+              >
+                {city}
+              </span>
+            ))}
+          </div>
+        </Reveal>
+
         <Reveal className="mt-10">
           <div className="rounded-3xl bg-ink text-bone p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-8 justify-between">
             <div>

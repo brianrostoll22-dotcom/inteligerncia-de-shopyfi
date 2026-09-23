@@ -25,6 +25,14 @@ const BLOCKS = [
     p: "Puedes venir a conocernos a Vigo o recibir a tu cachorro en casa: nuestras furgonetas disponen de localizador GPS y el cachorro viaja siempre acompañado por un miembro del equipo, de acuerdo con la legislación española de bienestar animal. Según tu zona, la entrega se realiza en 24 o 48 horas.",
   },
   {
+    h: "Pastor Alemán en venta en Galicia y toda España",
+    p: "Somos un criadero de Pastores Alemanes en Vigo, Pontevedra (Galicia), pero entregamos en toda la península: A Coruña, Ourense, Santiago de Compostela, Madrid, Barcelona, Valencia, Sevilla, Bilbao, Zaragoza, Málaga, Murcia y resto de ciudades. Si buscas pastores alemanes en venta cerca de ti, te lo llevamos en 24-48 h con un acompañante del equipo.",
+  },
+  {
+    h: "¿Es buena raza para familias con niños?",
+    p: "Sí: el Pastor Alemán es protector con los suyos, paciente con los niños y muy equilibrado si se cría y socializa bien. Por eso recomendamos conocer a la camada y a sus padres antes de decidir: puedes visitar el criadero con cita previa y ver en vivo el carácter de cada cachorro.",
+  },
+  {
     h: "El carácter del Pastor Alemán",
     p: "El Pastor Alemán es una de las razas más inteligentes, versátiles y leales del mundo: protector con la familia, paciente con los niños y extraordinariamente capaz de aprender. Con la crianza y socialización adecuadas, es el compañero ideal tanto para familia activa como para trabajo y deporte canino.",
   },
