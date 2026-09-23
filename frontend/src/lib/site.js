@@ -1,7 +1,7 @@
 // Configuración central del sitio — edita aquí el número de WhatsApp cuando esté disponible.
 
-export const WHATSAPP_NUMBER_DISPLAY = "+34 600 000 000";
-export const WHATSAPP_NUMBER_RAW = "34600000000"; // pendiente de número definitivo
+export const WHATSAPP_NUMBER_DISPLAY = "+34 613 18 94 13";
+export const WHATSAPP_NUMBER_RAW = "34613189413";
 
 export const PRICE = "450 €";
 export const LOCATION = "Vigo, Pontevedra — España";

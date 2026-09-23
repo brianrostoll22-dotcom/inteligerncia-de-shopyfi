@@ -67,3 +67,6 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 
 ## Iteración 9 (2026-09-21) — corrección de bug reportada
 - El usuario aclaró que la foto de portada (hero, adulto en el paisaje) no debía tocarse: restaurado el HERO_IMG original (unsplash photo-1511816882713, adulto entre rocas al atardecer) para escritorio y móvil. El resto de fotos mantiene el fondo del criadero. La copia de esa foto dentro de la galería conserva el fondo del criadero (pendiente de confirmar si el usuario también la quiere original). Verificado por captura: el hero sirve la imagen original.
+
+## Iteración 10 (2026-09-23) — número real de WhatsApp
+- Activado el número real del usuario: +34 613 18 94 13 (wa.me/34613189413) en los 11 enlaces de WhatsApp únicos de la web (nav, hero, 6 cachorros, aviso camada próxima, zona, visita, rastreo, footer y flotante), cada uno con su mensaje pre-escrito. Verificado por DOM: todos los enlaces apuntan al número real.
