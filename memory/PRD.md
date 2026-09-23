@@ -70,3 +70,11 @@ El usuario quiere una web que simule la venta de cachorros de Pastor Alemán com
 
 ## Iteración 10 (2026-09-23) — número real de WhatsApp
 - Activado el número real del usuario: +34 613 18 94 13 (wa.me/34613189413) en los 11 enlaces de WhatsApp únicos de la web (nav, hero, 6 cachorros, aviso camada próxima, zona, visita, rastreo, footer y flotante), cada uno con su mensaje pre-escrito. Verificado por DOM: todos los enlaces apuntan al número real.
+
+## Iteración 11 (2026-09-23) — SEO completo
+- HTML: título y meta description optimizados con keywords del nicho (comprar/cachorros/pastor alemán/venta/adopción/Vigo/Galicia/450 €), keywords, robots (index,follow,max-image-preview), canonical, Open Graph completo con og:image, Twitter Cards, theme-color.
+- Datos estructurados JSON-LD (4 bloques): PetStore/LocalBusiness (dirección Vigo, geo, teléfono +34613189413, horario lun-sáb 10-19, priceRange), WebSite, ItemList de 6 Product con Offer 450 EUR InStock (los cachorros), FAQPage con las 5 preguntas reales de la web.
+- Archivos: robots.txt (allow all + sitemap) y sitemap.xml con las secciones principales, servidos en /robots.txt y /sitemap.xml.
+- Nueva sección "08 — Guía de la raza" (SeoContent.jsx) con contenido optimizado para búsqueda local/nicho: comprar cachorro en España, precio, adopción responsable, entrega 24-48 h, carácter de la raza, visita al criadero de Vigo + CTA (Ver cachorros / WhatsApp).
+- Un solo H1; jerarquía H2/H3 semántica; imágenes con alt descriptivos; lazy loading; sin overflow.
+- Verificado: HTML externo sirve 4 bloques ld+json + canonical + og/twitter (tras reinicio de WDS), robots 200, sitemap 200, 1 único H1, sección visible en escritorio y móvil sin overflow.

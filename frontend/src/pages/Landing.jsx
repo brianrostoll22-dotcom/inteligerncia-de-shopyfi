@@ -13,6 +13,7 @@ import Delivery from "@/components/site/Delivery";
 import DeliveryTracking from "@/components/site/DeliveryTracking";
 import VigoCenter from "@/components/site/VigoCenter";
 import Faq from "@/components/site/Faq";
+import SeoContent from "@/components/site/SeoContent";
 import Footer from "@/components/site/Footer";
 import WhatsAppFloat from "@/components/site/WhatsAppFloat";
 
@@ -48,6 +49,7 @@ export default function Landing() {
         <DeliveryTracking />
         <VigoCenter />
         <Faq />
+        <SeoContent />
       </main>
       <Footer />
       <WhatsAppFloat />
