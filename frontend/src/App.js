@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "@/pages/Landing";
+import Stats from "@/pages/Stats";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -30,6 +31,7 @@ function App() {
     <BrowserRouter>
       <ErrorBoundary>
         <Routes>
+          <Route path="/estadisticas" element={<Stats />} />
           <Route path="*" element={<Landing />} />
         </Routes>
       </ErrorBoundary>

@@ -8,7 +8,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 
 ROOT_DIR = Path(__file__).parent
@@ -44,6 +44,13 @@ class TrackingInfo(BaseModel):
     status: str
     progress: int
     eta: str
+
+class TrackEvent(BaseModel):
+    event: str
+    label: str = ""
+    path: str = "/"
+    session: str = ""
+    referrer: str = ""
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
@@ -83,6 +90,95 @@ async def track_delivery(code: str):
     if not doc:
         raise HTTPException(status_code=404, detail="Código de seguimiento no encontrado")
     return TrackingInfo(**doc)
+
+@api_router.post("/analytics/collect")
+async def analytics_collect(e: TrackEvent):
+    doc = {
+        "event": e.event[:40],
+        "label": e.label[:120],
+        "path": e.path[:200],
+        "session": e.session[:64],
+        "referrer": e.referrer[:200],
+        "ts": datetime.now(timezone.utc),
+    }
+    await db.analytics_events.insert_one(doc)
+    return {"ok": True}
+
+@api_router.get("/analytics/summary")
+async def analytics_summary(days: int = 14):
+    since = datetime.now(timezone.utc) - timedelta(days=days)
+    match = {"ts": {"$gte": since}}
+
+    total = await db.analytics_events.count_documents(match)
+    sessions_list = await db.analytics_events.distinct("session", match)
+
+    by_event = {}
+    async for r in db.analytics_events.aggregate([
+        {"$match": match},
+        {"$group": {"_id": "$event", "n": {"$sum": 1}}},
+    ]):
+        by_event[r["_id"]] = r["n"]
+
+    wa_by_label = []
+    async for r in db.analytics_events.aggregate([
+        {"$match": {**match, "event": "whatsapp_click"}},
+        {"$group": {"_id": "$label", "n": {"$sum": 1}}},
+        {"$sort": {"n": -1}},
+        {"$limit": 8},
+    ]):
+        wa_by_label.append({"label": r["_id"] or "sin etiqueta", "count": r["n"]})
+
+    top_puppies = []
+    async for r in db.analytics_events.aggregate([
+        {"$match": {**match, "event": "puppy_view"}},
+        {"$group": {"_id": "$label", "n": {"$sum": 1}}},
+        {"$sort": {"n": -1}},
+    ]):
+        top_puppies.append({"label": r["_id"], "count": r["n"]})
+
+    top_sections = []
+    async for r in db.analytics_events.aggregate([
+        {"$match": {**match, "event": "section_view"}},
+        {"$group": {"_id": "$label", "n": {"$sum": 1}}},
+        {"$sort": {"n": -1}},
+    ]):
+        top_sections.append({"label": r["_id"], "count": r["n"]})
+
+    referrers = []
+    async for r in db.analytics_events.aggregate([
+        {"$match": match},
+        {"$group": {"_id": "$referrer", "n": {"$sum": 1}}},
+        {"$sort": {"n": -1}},
+        {"$limit": 8},
+    ]):
+        referrers.append({"label": r["_id"] or "Directo", "count": r["n"]})
+
+    daily = []
+    async for r in db.analytics_events.aggregate([
+        {"$match": match},
+        {"$group": {
+            "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$ts"}},
+            "views": {"$sum": 1},
+            "sessions": {"$addToSet": "$session"},
+        }},
+        {"$sort": {"_id": 1}},
+    ]):
+        daily.append({"date": r["_id"], "views": r["views"], "sessions": len(r["sessions"])})
+
+    return {
+        "days": days,
+        "total_events": total,
+        "page_views": by_event.get("page_view", 0),
+        "unique_sessions": len(sessions_list),
+        "whatsapp_clicks": by_event.get("whatsapp_click", 0),
+        "puppy_views": by_event.get("puppy_view", 0),
+        "tracking_lookups": by_event.get("tracking_lookup", 0),
+        "wa_by_label": wa_by_label,
+        "top_puppies": top_puppies,
+        "top_sections": top_sections,
+        "referrers": referrers,
+        "daily": daily,
+    }
 
 # Include the router in the main app
 app.include_router(api_router)
