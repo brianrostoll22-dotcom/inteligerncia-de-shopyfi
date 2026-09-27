@@ -104,6 +104,79 @@ function ConnectWizard({ onDone }) {
   );
 }
 
+const TASKS = [
+  "Analizando el mercado y los productos",
+  "Seleccionando los productos ganadores",
+  "Generando el diseño de tu tienda",
+  "Configurando pagos y envíos",
+  "Optimizando la visibilidad y preparando las ventas",
+];
+
+function SetupPanel({ progress, elapsed, total }) {
+  const stage = Math.min(4, Math.floor(progress / 20));
+  return (
+    <div className="rounded-2xl border border-teal/30 bg-panel p-8 md:p-10 glow" data-testid="ai-setup-panel">
+      <div className="flex items-center gap-4">
+        <span className="relative flex items-center justify-center w-14 h-14 rounded-2xl bg-teal/15 text-teal shrink-0">
+          <Bot className="w-7 h-7" />
+          <span className="absolute inset-0 rounded-2xl border border-teal/40 animate-ping opacity-20" />
+        </span>
+        <div>
+          <h2 className="font-display text-xl md:text-2xl" data-testid="setup-title">Generando tu tienda con IA</h2>
+          <p className="text-mist text-sm mt-1">
+            Creándola de la mejor forma posible: diseño, productos ganadores y configuración
+            completa. La IA gestiona todo por ti.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8" data-testid="setup-progress">
+        <div className="flex justify-between text-xs text-mist font-mono mb-2">
+          <span>Progreso · {progress}%</span>
+          <span>Ventas en ~{Math.max(0, total - elapsed)} min</span>
+        </div>
+        <div className="h-2.5 rounded-full bg-edge overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 1 }}
+            className="h-full rounded-full bg-teal"
+          />
+        </div>
+        <p className="text-[11px] text-mist/60 mt-2 font-mono">
+          Preparación mínima: {total} min desde la activación · {elapsed} min transcurridos
+        </p>
+      </div>
+
+      <div className="mt-8 space-y-3" data-testid="setup-tasks">
+        {TASKS.map((t, i) => (
+          <div
+            key={t}
+            className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 ${
+              i < stage ? "border-teal/40 bg-teal/5" : i === stage ? "border-teal/50 bg-teal/10" : "border-edge bg-card/50"
+            }`}
+          >
+            {i < stage ? (
+              <CheckCircle2 className="w-5 h-5 text-teal shrink-0" />
+            ) : i === stage ? (
+              <Loader2 className="w-5 h-5 text-teal shrink-0 animate-spin" />
+            ) : (
+              <span className="w-5 h-5 rounded-full border border-edge shrink-0" />
+            )}
+            <span className={`text-sm ${i <= stage ? "text-white" : "text-mist/60"}`}>{t}</span>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-7 text-[11px] text-mist/60 flex items-start gap-2">
+        <ShieldCheck className="w-4 h-4 shrink-0 text-teal" />
+        Después de la preparación, la IA seguirá gestionando tu tienda: análisis continuo, ventas y
+        visibilidad.
+      </p>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const { user, setUser } = useAuth();
   const [data, setData] = useState(null);
@@ -129,7 +202,7 @@ export default function Dashboard() {
 
   // Tick en vivo: pequeños avances entre sondeos (solo con la IA activada)
   useEffect(() => {
-    if (!user?.ai_activated) return;
+    if (!user?.ai_activated || data?.setup?.in_progress) return;
     const t = setInterval(() => {
       setLive((m) =>
         m
@@ -150,7 +223,7 @@ export default function Dashboard() {
 
   // Actividad de la IA en directo
   useEffect(() => {
-    if (!data || !user?.ai_activated) return;
+    if (!data || !user?.ai_activated || data?.setup?.in_progress) return;
     const gen = () => {
       const d = dataRef.current;
       if (!d) return;
@@ -269,14 +342,26 @@ export default function Dashboard() {
                 <span className="absolute inset-0 rounded-xl border border-teal/40 animate-ping opacity-20" />
               </span>
               <div>
-                <p className="font-display text-lg leading-tight">La IA está trabajando en tu tienda</p>
-                <p className="text-mist text-sm mt-1">Analizando productos, optimizando visibilidad y gestionando ventas ahora mismo.</p>
+                <p className="font-display text-lg leading-tight">
+                  {data?.setup?.in_progress ? "Generando tu tienda con IA" : "La IA está trabajando en tu tienda"}
+                </p>
+                <p className="text-mist text-sm mt-1">
+                  {data?.setup?.in_progress
+                    ? "Diseñando, analizando y configurando todo por ti. Las ventas empiezan al terminar la preparación."
+                    : "Analizando productos, optimizando visibilidad y gestionando ventas ahora mismo."}
+                </p>
               </div>
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-teal whitespace-nowrap">● Estado: activo</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-teal whitespace-nowrap">
+              ● Estado: {data?.setup?.in_progress ? "preparando" : "activo"}
+            </span>
           </div>
           )}
 
+          {data?.setup?.in_progress ? (
+            <SetupPanel progress={data.setup.progress} elapsed={data.setup.elapsed_min} total={data.setup.total_min} />
+          ) : (
+          <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <Kpi icon={Zap} label="Productos analizados" value={m ? fmt(m.products_analyzed) : "—"} testid="kpi-products-analyzed" />
             <Kpi icon={Sparkles} label="Productos seleccionados" value={m ? fmt(m.products_selected) : "—"} testid="kpi-products-selected" />
@@ -364,6 +449,8 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+          </>
+          )}
         </>
       )}
     </Shell>

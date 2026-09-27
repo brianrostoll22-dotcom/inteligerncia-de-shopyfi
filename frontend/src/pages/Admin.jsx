@@ -314,8 +314,17 @@ export default function Admin() {
       </div>
 
       <div className="rounded-2xl border border-edge bg-panel p-6 md:p-8 mb-6" data-testid="admin-config">
-        <h2 className="font-display text-base mb-6">Crecimiento horario de la IA</h2>
+        <h2 className="font-display text-base mb-6">Crecimiento horario y preparación de la IA</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">Minutos de preparación (mín. antes de vender)</label>
+            <input
+              value={data.setup_minutes ?? 60}
+              onChange={(e) => setData({ ...data, setup_minutes: Number(e.target.value) || 0 })}
+              data-testid="admin-setup-minutes"
+              className={`${inputCls} mt-2`}
+            />
+          </div>
           {Object.keys(METRIC_LABELS).map((k) => (
             <div key={k}>
               <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">{METRIC_LABELS[k]} / hora</label>

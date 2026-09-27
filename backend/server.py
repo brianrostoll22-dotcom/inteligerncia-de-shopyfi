@@ -196,6 +196,7 @@ DEFAULT_DATA = {
         "Reabasteciendo {p} por alta demanda",
     ],
     "categories": ["Hogar", "Tecnología", "Mascotas", "Fitness", "Moda", "Cocina"],
+    "setup_minutes": 60,
     "updated_at": now().isoformat(),
 }
 
@@ -206,29 +207,40 @@ def get_platform() -> dict:
     return DEFAULT_DATA
 
 
+def user_hours(user: dict) -> float:
+    start = user.get("metrics_started_at") or (user.get("store") or {}).get("connected_at")
+    if not start:
+        return 0.0
+    try:
+        st = datetime.fromisoformat(start)
+        return max(0.0, (now() - st).total_seconds() / 3600)
+    except Exception:
+        return 0.0
+
+
 def live_metrics_for(user: dict, data: dict) -> dict:
     if not user.get("ai_activated"):
         z = zero_metrics()
         z["conversion"] = 0
         return z
     base = {**zero_metrics(), **(user.get("metrics") or {})}
-    start = user.get("metrics_started_at") or (user.get("store") or {}).get("connected_at")
-    hours = 0.0
-    if start:
-        try:
-            st = datetime.fromisoformat(start)
-            hours = max(0.0, (now() - st).total_seconds() / 3600)
-        except Exception:
-            hours = 0.0
+    hours = user_hours(user)
     rates = data.get("rates", DEFAULT_DATA["rates"])
     mult = PLAN_MULTIPLIER.get(user.get("plan") or "", 1.0)
+    setup_min = int(data.get("setup_minutes", 60))
+    elapsed_min = hours * 60
+    analyzing = int(base["products_analyzed"] + hours * rates["products_analyzed"] * mult)
+    selecting = int(base["products_selected"] + hours * rates["products_selected"] * mult)
+    if elapsed_min < setup_min:
+        return {"products_analyzed": analyzing, "products_selected": selecting, "sales": 0, "orders": 0, "visits": 0, "revenue": 0, "conversion": 0}
+    ramp = min(1.0, (elapsed_min - setup_min) / 120)
     m = {
-        "products_analyzed": int(base["products_analyzed"] + hours * rates["products_analyzed"] * mult),
-        "products_selected": int(base["products_selected"] + hours * rates["products_selected"] * mult),
-        "sales": int(base["sales"] + hours * rates["sales"] * mult),
-        "orders": int(base["orders"] + hours * rates["orders"] * mult),
-        "visits": int(base["visits"] + hours * rates["visits"] * mult),
-        "revenue": round(base["revenue"] + hours * rates["revenue"] * mult, 2),
+        "products_analyzed": analyzing,
+        "products_selected": selecting,
+        "sales": int(base["sales"] + hours * rates["sales"] * mult * ramp),
+        "orders": int(base["orders"] + hours * rates["orders"] * mult * ramp),
+        "visits": int(base["visits"] + hours * rates["visits"] * mult * ramp),
+        "revenue": round(base["revenue"] + hours * rates["revenue"] * mult * ramp, 2),
     }
     m["conversion"] = round(m["sales"] / m["visits"] * 100, 2) if m["visits"] else 0
     return m
@@ -471,6 +483,14 @@ async def shopify_connect(body: ConnectIn, user: dict = Depends(get_current_user
 async def dashboard(user: dict = Depends(get_current_user)):
     data = await platform_doc()
     m = live_metrics_for(user, data)
+    setup_min = int(data.get("setup_minutes", 60))
+    elapsed_min = user_hours(user) * 60
+    setup = {
+        "in_progress": bool(user.get("ai_activated")) and elapsed_min < setup_min,
+        "progress": min(100, int(elapsed_min / setup_min * 100)) if setup_min > 0 else 100,
+        "elapsed_min": int(elapsed_min),
+        "total_min": setup_min,
+    }
     base_day = m["revenue"] / 14
     series = [{"d": f"Día {i+1}", "v": round(base_day * (0.45 + i * 0.045 + ((i * 7) % 3) * 0.03), 2)} for i in range(14)]
     plan = next((p for p in data.get("plans", DEFAULT_PLANS) if p["id"] == user.get("plan")), None)
@@ -479,6 +499,7 @@ async def dashboard(user: dict = Depends(get_current_user)):
         "plan": plan,
         "ai_activated": bool(user.get("ai_activated")),
         "balance": user.get("balance", 0),
+        "setup": setup,
         "metrics": m,
         "series": series,
         "products": data.get("products", []),
@@ -580,7 +601,7 @@ async def admin_get(user: dict = Depends(get_current_user)):
 async def admin_put(body: AdminIn, user: dict = Depends(get_current_user)):
     if user.get("role") != "admin":
         raise HTTPException(403, "Solo administradores")
-    clean = {k: v for k, v in body.data.items() if k in ("rates", "plans", "products", "activity", "categories")}
+    clean = {k: v for k, v in body.data.items() if k in ("rates", "plans", "products", "activity", "categories", "setup_minutes")}
     clean["updated_at"] = now().isoformat()
     await db.platform.update_one({"_id": "main"}, {"$set": clean, "$setOnInsert": {"_id": "main"}}, upsert=True)
     return {"ok": True}
