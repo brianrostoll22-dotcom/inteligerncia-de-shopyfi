@@ -14,6 +14,11 @@ export default function Login({ mode = "login" }) {
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
+  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+  const googleLogin = () => {
+    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(window.location.origin + "/app")}`;
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     setError("");
@@ -105,6 +110,22 @@ export default function Login({ mode = "login" }) {
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {isRegister ? "Crear cuenta y entrar" : "Entrar"}
+            </button>
+
+            <div className="flex items-center gap-3 pt-1">
+              <span className="h-px flex-1 bg-edge" />
+              <span className="text-[10px] text-mist uppercase tracking-[0.25em]">o</span>
+              <span className="h-px flex-1 bg-edge" />
+            </div>
+
+            <button
+              type="button"
+              onClick={googleLogin}
+              data-testid="google-auth-btn"
+              className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-edge bg-card px-6 py-3 text-sm font-semibold hover:border-mist transition-colors"
+            >
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-[#4285F4] font-bold text-xs">G</span>
+              {isRegister ? "Registrarse con Google" : "Continuar con Google"}
             </button>
           </form>
 

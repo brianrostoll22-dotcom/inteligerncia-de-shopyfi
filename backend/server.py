@@ -8,6 +8,8 @@ from pydantic import BaseModel
 import os
 import jwt
 import bcrypt
+import json
+import urllib.request
 from bson import ObjectId
 from datetime import datetime, timezone, timedelta
 
@@ -52,7 +54,22 @@ def safe_user(u: dict) -> dict:
         "role": u.get("role", "user"), "plan": u.get("plan"),
         "store": u.get("store", {"connected": False}), "prefs": u.get("prefs", {}),
         "ai_activated": bool(u.get("ai_activated")),
+        "balance": round(float(u.get("balance", 0)), 2),
     }
+
+
+async def user_from_session(session_token: str):
+    sess = await db.user_sessions.find_one({"session_token": session_token})
+    if not sess:
+        return None
+    exp = sess.get("expires_at")
+    if isinstance(exp, str):
+        exp = datetime.fromisoformat(exp)
+    if exp.tzinfo is None:
+        exp = exp.replace(tzinfo=timezone.utc)
+    if exp < now():
+        return None
+    return await db.users.find_one({"_id": ObjectId(sess["user_id"])})
 
 
 async def get_current_user(request: Request) -> dict:
@@ -60,17 +77,21 @@ async def get_current_user(request: Request) -> dict:
     if not token:
         auth = request.headers.get("Authorization", "")
         token = auth[7:] if auth.startswith("Bearer ") else None
-    if not token:
-        raise HTTPException(401, "No autenticado")
-    try:
-        payload = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[JWT_ALG])
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(401, "Sesión caducada")
-    except jwt.InvalidTokenError:
-        raise HTTPException(401, "Token inválido")
-    user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
+    user = None
+    if token:
+        try:
+            payload = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[JWT_ALG])
+            user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(401, "Sesión caducada")
+        except jwt.InvalidTokenError:
+            user = None
     if not user:
-        raise HTTPException(401, "Usuario no encontrado")
+        st = request.cookies.get("session_token")
+        if st:
+            user = await user_from_session(st)
+    if not user:
+        raise HTTPException(401, "No autenticado")
     return {
         "id": str(user["_id"]), "email": user["email"], "role": user.get("role", "user"),
         "first_name": user.get("first_name", ""), "last_name": user.get("last_name", ""),
@@ -78,6 +99,7 @@ async def get_current_user(request: Request) -> dict:
         "store": user.get("store", {"connected": False}), "prefs": user.get("prefs", {}),
         "metrics": user.get("metrics"), "metrics_started_at": user.get("metrics_started_at"),
         "ai_activated": bool(user.get("ai_activated")),
+        "balance": round(float(user.get("balance", 0)), 2),
         "created_at": user.get("created_at"),
     }
 
@@ -124,6 +146,7 @@ class UserUpdateIn(BaseModel):
     metrics: dict = None
     plan: str = None
     ai_activated: bool = None
+    balance: float = None
 
 
 class AdminIn(BaseModel):
@@ -227,10 +250,13 @@ async def startup():
     admin_pw = os.environ.get("ADMIN_PASSWORD", "NovaIA-2026!segura")
     existing = await db.users.find_one({"email": admin_email})
     if existing is None:
-        await db.users.insert_one({"email": admin_email, "password_hash": hash_password(admin_pw), "first_name": "Admin", "last_name": "", "avatar_url": "", "role": "admin", "store": {"connected": False}, "plan": None, "prefs": {}, "metrics": zero_metrics(), "metrics_started_at": None, "created_at": now()})
+        await db.users.insert_one({"email": admin_email, "password_hash": hash_password(admin_pw), "first_name": "Admin", "last_name": "", "avatar_url": "", "role": "admin", "store": {"connected": False}, "plan": None, "prefs": {}, "metrics": zero_metrics(), "metrics_started_at": None, "ai_activated": False, "balance": 0, "created_at": now()})
     elif not verify_password(admin_pw, existing["password_hash"]):
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_pw)}})
     await db.users.update_many({"plan": {"$ne": None}, "ai_activated": {"$ne": True}, "metrics_started_at": {"$ne": None}}, {"$set": {"ai_activated": True}})
+    for u in await db.users.find({"balance": {"$exists": False}}).to_list(1000):
+        price = next((p["price"] for p in DEFAULT_PLANS if p["id"] == u.get("plan")), 0) if u.get("ai_activated") else 0
+        await db.users.update_one({"_id": u["_id"]}, {"$set": {"balance": float(price)}})
     data = await db.platform.find_one({"_id": "main"})
     if not data:
         await db.platform.insert_one({**DEFAULT_DATA, "_id": "main"})
@@ -264,7 +290,7 @@ async def register(body: RegisterIn, response: __import__("fastapi").Response):
         raise HTTPException(400, "Email o contraseña no válidos (mínimo 6 caracteres)")
     if await db.users.find_one({"email": email}):
         raise HTTPException(400, "Ese email ya está registrado")
-    doc = {"email": email, "password_hash": hash_password(body.password), "first_name": body.first_name.strip(), "last_name": body.last_name.strip(), "avatar_url": "", "role": "user", "store": {"connected": False}, "plan": None, "prefs": {"notify_email": True, "notify_sales": True}, "metrics": zero_metrics(), "metrics_started_at": None, "ai_activated": False, "created_at": now()}
+    doc = {"email": email, "password_hash": hash_password(body.password), "first_name": body.first_name.strip(), "last_name": body.last_name.strip(), "avatar_url": "", "role": "user", "store": {"connected": False}, "plan": None, "prefs": {"notify_email": True, "notify_sales": True}, "metrics": zero_metrics(), "metrics_started_at": None, "ai_activated": False, "balance": 0, "created_at": now()}
     r = await db.users.insert_one(doc)
     uid = str(r.inserted_id)
     set_auth_cookies(response, uid, email)
@@ -295,10 +321,46 @@ async def login(body: LoginIn, request: Request, response: __import__("fastapi")
 
 
 @app.post("/api/auth/logout")
-async def logout(response: __import__("fastapi").Response):
+async def logout(request: Request, response: __import__("fastapi").Response):
+    st = request.cookies.get("session_token")
+    if st:
+        await db.user_sessions.delete_one({"session_token": st})
     response.delete_cookie("access_token", path="/")
     response.delete_cookie("refresh_token", path="/")
+    response.delete_cookie("session_token", path="/")
     return {"ok": True}
+
+
+class GoogleIn(BaseModel):
+    session_id: str
+
+
+@app.post("/api/auth/google")
+async def auth_google(body: GoogleIn, response: __import__("fastapi").Response):
+    req = urllib.request.Request(
+        "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+        headers={"X-Session-ID": body.session_id},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            d = json.loads(r.read().decode())
+    except Exception:
+        raise HTTPException(401, "No se pudo validar la sesión de Google. Inténtalo de nuevo.")
+    email = (d.get("email") or "").strip().lower()
+    if not email:
+        raise HTTPException(401, "Google no devolvió un email válido")
+    name = (d.get("name") or "").strip()
+    parts = name.split(" ", 1)
+    user = await db.users.find_one({"email": email})
+    if not user:
+        doc = {"email": email, "password_hash": hash_password(os.environ.get("JWT_SECRET", "novaia")[:16] + email), "first_name": parts[0] or name, "last_name": parts[1] if len(parts) > 1 else "", "avatar_url": d.get("picture", ""), "role": "user", "store": {"connected": False}, "plan": None, "prefs": {"notify_email": True, "notify_sales": True}, "metrics": zero_metrics(), "metrics_started_at": None, "ai_activated": False, "balance": 0, "created_at": now()}
+        r = await db.users.insert_one(doc)
+        user = await db.users.find_one({"_id": r.inserted_id})
+    await db.user_sessions.insert_one({"user_id": str(user["_id"]), "session_token": d.get("session_token", ""), "expires_at": now() + timedelta(days=7)})
+    set_auth_cookies(response, str(user["_id"]), email)
+    response.set_cookie("session_token", d.get("session_token", ""), httponly=True, secure=True, samesite="none", max_age=604800, path="/")
+    user["_id"] = str(user["_id"])
+    return safe_user(user)
 
 
 @app.post("/api/auth/refresh")
@@ -343,12 +405,25 @@ async def set_plan(body: PlanIn, user: dict = Depends(get_current_user)):
     return {"ok": True, "plan": body.plan_id}
 
 
+class ActivateIn(BaseModel):
+    plan_id: str
+
+
 @app.post("/api/me/activate-ai")
-async def activate_ai(user: dict = Depends(get_current_user)):
-    if not user.get("plan"):
-        raise HTTPException(400, "Necesitas un plan aprobado antes de activar la IA")
-    await db.users.update_one({"_id": ObjectId(user["id"])}, {"$set": {"ai_activated": True, "metrics_started_at": now().isoformat()}})
-    return {"ok": True}
+async def activate_ai(body: ActivateIn, user: dict = Depends(get_current_user)):
+    data = await platform_doc()
+    plan = next((p for p in data.get("plans", DEFAULT_PLANS) if p["id"] == body.plan_id), None)
+    if not plan:
+        raise HTTPException(400, "Plan no válido")
+    u = await db.users.find_one({"_id": ObjectId(user["id"])})
+    balance = float(u.get("balance", 0))
+    if balance < plan["price"]:
+        raise HTTPException(400, f"Saldo insuficiente: necesitas al menos {plan['price']} € depositados para activar el plan {plan['name']}")
+    await db.users.update_one({"_id": ObjectId(user["id"])}, {"$set": {
+        "balance": round(balance - plan["price"], 2), "plan": body.plan_id,
+        "ai_activated": True, "metrics_started_at": now().isoformat(),
+    }})
+    return {"ok": True, "balance": round(balance - plan["price"], 2)}
 
 
 class VoucherPublic(BaseModel):
@@ -403,6 +478,7 @@ async def dashboard(user: dict = Depends(get_current_user)):
         "store": user.get("store", {"connected": False}),
         "plan": plan,
         "ai_activated": bool(user.get("ai_activated")),
+        "balance": user.get("balance", 0),
         "metrics": m,
         "series": series,
         "products": data.get("products", []),
@@ -424,6 +500,7 @@ async def admin_users(user: dict = Depends(get_current_user)):
             "last_name": u.get("last_name", ""), "role": u.get("role", "user"),
             "plan": u.get("plan"), "store": u.get("store", {"connected": False}),
             "ai_activated": bool(u.get("ai_activated")),
+            "balance": round(float(u.get("balance", 0)), 2),
             "metrics": {**zero_metrics(), **(u.get("metrics") or zero_metrics())},
             "metrics_started_at": u.get("metrics_started_at"),
             "created_at": (u.get("created_at") or now()).isoformat() if isinstance(u.get("created_at"), datetime) else (u.get("created_at") or now().isoformat()),
@@ -449,6 +526,8 @@ async def admin_update_user(uid: str, body: UserUpdateIn, user: dict = Depends(g
         set_fields["ai_activated"] = body.ai_activated
         if body.ai_activated and not set_fields.get("metrics_started_at"):
             set_fields["metrics_started_at"] = now().isoformat()
+    if body.balance is not None:
+        set_fields["balance"] = round(float(body.balance), 2)
     await db.users.update_one({"_id": ObjectId(uid)}, {"$set": set_fields})
     return {"ok": True}
 
@@ -477,8 +556,11 @@ async def admin_voucher_status(vid: str, body: VoucherStatusIn, user: dict = Dep
         upd["validated_at"] = now().isoformat()
     await db.vouchers.update_one({"_id": ObjectId(vid)}, {"$set": upd})
     if status == "validado":
-        set_fields = {"plan": v["plan_id"], "metrics_started_at": now().isoformat()}
-        await db.users.update_one({"_id": ObjectId(v["user_id"])}, {"$set": set_fields})
+        data = await platform_doc()
+        price = next((p["price"] for p in data.get("plans", DEFAULT_PLANS) if p["id"] == v["plan_id"]), 0)
+        u = await db.users.find_one({"_id": ObjectId(v["user_id"])})
+        new_balance = round(float((u or {}).get("balance", 0)) + price, 2)
+        await db.users.update_one({"_id": ObjectId(v["user_id"])}, {"$set": {"balance": new_balance}})
     return {"ok": True}
 
 

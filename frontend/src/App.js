@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { AuthCtx } from "@/lib/auth";
 import Landing from "@/pages/Landing";
@@ -40,6 +40,49 @@ function Splash() {
   );
 }
 
+function AuthCallback() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { setUser } = React.useContext(AuthCtx);
+  const hasProcessed = useRef(false);
+
+  useEffect(() => {
+    if (hasProcessed.current) return;
+    hasProcessed.current = true;
+    const sid = decodeURIComponent((location.hash.split("session_id=")[1] || "").split("&")[0] || "");
+    if (!sid) {
+      navigate("/login", { replace: true });
+      return;
+    }
+    api("/auth/google", { method: "POST", body: { session_id: sid } })
+      .then((u) => {
+        setUser(u);
+        navigate("/app", { replace: true });
+      })
+      .catch(() => navigate("/login", { replace: true }));
+  }, []);
+
+  return <Splash />;
+}
+
+function AppRoutes() {
+  const location = useLocation();
+  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+  if (location.hash?.includes("session_id=")) return <AuthCallback />;
+  return (
+    <Routes>
+      <Route path="/" element={<PublicOnly><Landing /></PublicOnly>} />
+      <Route path="/login" element={<PublicOnly><Login mode="login" /></PublicOnly>} />
+      <Route path="/registro" element={<PublicOnly><Login mode="register" /></PublicOnly>} />
+      <Route path="/app" element={<Protected><Dashboard /></Protected>} />
+      <Route path="/app/planes" element={<Protected><Plans /></Protected>} />
+      <Route path="/app/perfil" element={<Protected><Profile /></Protected>} />
+      <Route path="/admin" element={<Protected admin><Admin /></Protected>} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
 function Protected({ admin = false, children }) {
   const { user, ready } = React.useContext(AuthCtx);
   if (!ready) return <Splash />;
@@ -59,6 +102,8 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    if (window.location.hash?.includes("session_id=")) return;
     api("/auth/me")
       .then(setUser)
       .catch(() => setUser(false));
@@ -68,16 +113,7 @@ function App() {
     <AuthCtx.Provider value={{ user: user && user !== false ? user : null, ready: user !== null, setUser }}>
       <BrowserRouter>
         <ErrorBoundary>
-          <Routes>
-            <Route path="/" element={<PublicOnly><Landing /></PublicOnly>} />
-            <Route path="/login" element={<PublicOnly><Login mode="login" /></PublicOnly>} />
-            <Route path="/registro" element={<PublicOnly><Login mode="register" /></PublicOnly>} />
-            <Route path="/app" element={<Protected><Dashboard /></Protected>} />
-            <Route path="/app/planes" element={<Protected><Plans /></Protected>} />
-            <Route path="/app/perfil" element={<Protected><Profile /></Protected>} />
-            <Route path="/admin" element={<Protected admin><Admin /></Protected>} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <AppRoutes />
         </ErrorBoundary>
       </BrowserRouter>
     </AuthCtx.Provider>

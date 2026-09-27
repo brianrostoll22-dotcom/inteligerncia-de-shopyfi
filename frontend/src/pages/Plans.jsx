@@ -42,7 +42,7 @@ export default function Plans() {
     try {
       await api("/me/voucher", { method: "POST", body: { plan_id, url } });
       setInputs({ ...inputs, [plan_id]: "" });
-      setRedeemMsg({ ...redeemMsg, [plan_id]: { type: "ok", text: "Voucher recibido. En cuanto sea aprobado, podrás activar la IA en tu panel." } });
+      setRedeemMsg({ ...redeemMsg, [plan_id]: { type: "ok", text: "Voucher recibido. Cuando sea aprobado, su importe se sumará a tu saldo y podrás activar la IA." } });
       await load();
     } catch (e) {
       setRedeemMsg({ ...redeemMsg, [plan_id]: { type: "err", text: formatDetail(e.message) } });
@@ -66,6 +66,12 @@ export default function Plans() {
         El plan define la potencia con la que la IA gestiona tu tienda. Se activa con un voucher
         Azteco que compras en G2A. Puedes cambiar de plan cuando quieras.
       </p>
+
+      <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-teal/40 bg-teal/10 px-5 py-3.5" data-testid="balance-card">
+        <CreditCard className="w-5 h-5 text-teal" />
+        <span className="text-sm text-mist">Tu saldo disponible:</span>
+        <span className="font-display text-xl text-teal">{fmt.format(user.balance || 0)} €</span>
+      </div>
 
       <div className="mt-8 rounded-2xl border border-edge bg-panel p-6 md:p-8" data-testid="howto-redeem">
         <h2 className="font-display text-base mb-6">Cómo canjear tu voucher, paso a paso</h2>

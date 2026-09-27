@@ -170,22 +170,20 @@ export default function Dashboard() {
     return () => clearInterval(t);
   }, [data, user?.ai_activated]);
 
-  const m = live || data?.metrics;
-  const approved = !!user.plan;
-  const activated = !!user.ai_activated;
-  const planName = data?.plans?.find((p) => p.id === user.plan)?.name;
-  const [activating, setActivating] = useState(false);
-
-  const activateAI = async () => {
+  const activateAI = async (planId) => {
     setActivating(true);
     try {
-      await api("/me/activate-ai", { method: "POST" });
+      await api("/me/activate-ai", { method: "POST", body: { plan_id: planId } });
       const me = await api("/auth/me");
       setUser(me);
       await load();
     } catch {}
     setActivating(false);
   };
+
+  const m = live || data?.metrics;
+  const activated = !!user.ai_activated;
+  const [activating, setActivating] = useState(false);
 
   return (
     <Shell>
@@ -214,6 +212,10 @@ export default function Dashboard() {
                 <Store className="w-3.5 h-3.5 text-teal" />
                 Tienda operativa
               </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-edge bg-card px-4 py-2 text-xs font-semibold text-white" data-testid="balance-chip">
+                <Euro className="w-3.5 h-3.5 text-teal" />
+                Saldo: {money(data?.balance ?? user.balance ?? 0)}
+              </span>
               {data?.plan && (
                 <Link to="/app/planes" data-testid="current-plan-badge" className="rounded-full bg-lav/15 border border-lav/40 text-lav px-4 py-2 text-xs font-semibold">
                   Plan {data.plan.name}
@@ -222,40 +224,42 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {!approved ? (
-            <div className="rounded-2xl border border-edge bg-card p-6 md:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center gap-4 justify-between" data-testid="ai-waiting-plan">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center justify-center w-12 h-12 rounded-xl bg-teal/15 text-teal">
-                  <Bot className="w-6 h-6" />
-                </span>
-                <div>
-                  <p className="font-display text-lg leading-tight">Añade un plan para que la IA empiece a trabajar</p>
-                  <p className="text-mist text-sm mt-1">Elige un plan, canjea tu voucher y la IA gestionará tu tienda.</p>
-                </div>
-              </div>
-              <Link to="/app/planes" data-testid="go-plans-btn" className="rounded-full bg-teal text-night px-6 py-3 text-sm font-semibold hover:opacity-90 transition-opacity">
-                Ver planes
-              </Link>
-            </div>
-          ) : !activated ? (
+          {!activated ? (
             <div className="rounded-2xl border border-teal/40 bg-teal/10 p-6 md:p-8 mb-8" data-testid="activate-ai-card">
               <div className="flex items-center gap-3">
                 <CheckCircle2 className="w-6 h-6 text-teal" />
-                <p className="font-display text-lg leading-tight">Tu plan {planName} ha sido aprobado</p>
+                <p className="font-display text-lg leading-tight" data-testid="activation-balance">
+                  Saldo disponible: {money(data?.balance ?? user.balance)} €
+                </p>
               </div>
-              <p className="text-mist text-sm mt-2.5 max-w-xl">
-                Ya puedes activar la inteligencia artificial. Al activarla empezará a trabajar en tu
-                tienda y tu dinero aparecerá en el panel.
+              <p className="text-mist text-sm mt-2.5">
+                Elige el plan que quieras activar. Se descontará de tu saldo y la IA empezará a
+                trabajar en tu tienda: tu dinero aparecerá en el panel.
               </p>
-              <button
-                onClick={activateAI}
-                disabled={activating}
-                data-testid="activate-ai-btn"
-                className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-teal text-night px-8 py-4 font-semibold hover:bg-tealdeep hover:text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              >
-                {activating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Bot className="w-5 h-5" />}
-                {activating ? "Activando…" : "Activar inteligencia artificial en la tienda"}
-              </button>
+              <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {(data?.plans || []).map((p) => {
+                  const can = (data?.balance ?? user.balance ?? 0) >= p.price;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => activateAI(p.id)}
+                      disabled={activating || !can}
+                      data-testid={`activate-plan-${p.id}`}
+                      className={`rounded-xl border p-4 text-left transition-all ${
+                        can ? "border-teal/50 bg-card hover:border-teal" : "border-edge bg-card/50 opacity-60 cursor-not-allowed"
+                      }`}
+                    >
+                      <p className="font-display text-sm">{p.name}</p>
+                      <p className="text-xs text-mist mt-1">
+                        {p.price} € · {fmt(p.profit_min)}–{fmt(p.profit_max)} €/mes
+                      </p>
+                      <p className={`text-[11px] mt-2 font-semibold ${can ? "text-teal" : "text-danger"}`}>
+                        {can ? (activating ? "Activando…" : "Activar IA") : `Te faltan ${(p.price - (data?.balance ?? user.balance ?? 0)).toFixed(0)} €`}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           ) : (
           <div className="rounded-2xl border border-teal/30 bg-gradient-to-r from-teal/10 via-card to-card p-5 md:p-6 mb-8 flex flex-col md:flex-row items-start md:items-center gap-4 justify-between" data-testid="ai-status-card">

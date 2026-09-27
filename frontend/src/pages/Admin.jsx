@@ -20,6 +20,7 @@ function UserRow({ u, plans, onSaved }) {
   const [metrics, setMetrics] = useState(u.metrics);
   const [plan, setPlan] = useState(u.plan || "none");
   const [aiOn, setAiOn] = useState(!!u.ai_activated);
+  const [balance, setBalance] = useState(u.balance ?? 0);
   const [busy, setBusy] = useState(false);
   const isNew = Date.now() - new Date(u.created_at).getTime() < 48 * 3600 * 1000;
   const planName = plans.find((p) => p.id === u.plan)?.name;
@@ -29,7 +30,7 @@ function UserRow({ u, plans, onSaved }) {
     try {
       await api(`/admin/users/${u.id}`, {
         method: "PUT",
-        body: { metrics, plan: plan === "none" ? null : plan, ai_activated: aiOn },
+        body: { metrics, plan: plan === "none" ? null : plan, ai_activated: aiOn, balance: Number(balance) || 0 },
       });
       await onSaved();
     } catch (e) {
@@ -85,7 +86,7 @@ function UserRow({ u, plans, onSaved }) {
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <span className="text-xs text-mist font-mono tabular-nums">
-            {u.live.products_analyzed} anal. · {u.live.sales} ventas · {u.live.revenue} €
+            {u.live.products_analyzed} anal. · {u.live.sales} ventas · {u.live.revenue} € · saldo: {u.balance} €
           </span>
           <span className={`rounded-full border px-3 py-1 text-[10px] font-semibold ${u.plan ? "border-teal/40 bg-teal/10 text-teal" : "border-edge text-mist"}`}>
             {planName || "Sin plan"}
@@ -123,6 +124,15 @@ function UserRow({ u, plans, onSaved }) {
             </button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="col-span-2 sm:col-span-3">
+              <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">Saldo del usuario (€)</label>
+              <input
+                value={balance}
+                onChange={(e) => setBalance(Number(e.target.value) || 0)}
+                data-testid={`user-balance-${u.id}`}
+                className={`${inputCls} mt-1.5`}
+              />
+            </div>
             {Object.keys(METRIC_LABELS).map((k) => (
               <div key={k}>
                 <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">{METRIC_LABELS[k]}</label>
