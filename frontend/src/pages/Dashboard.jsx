@@ -105,7 +105,7 @@ function ConnectWizard({ onDone }) {
 }
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [data, setData] = useState(null);
   const [live, setLive] = useState(null);
   const [feed, setFeed] = useState([]);
@@ -127,8 +127,9 @@ export default function Dashboard() {
     return () => clearInterval(p);
   }, []);
 
-  // Tick en vivo: pequeños avances entre sondeos
+  // Tick en vivo: pequeños avances entre sondeos (solo con la IA activada)
   useEffect(() => {
+    if (!user?.ai_activated) return;
     const t = setInterval(() => {
       setLive((m) =>
         m
@@ -139,17 +140,17 @@ export default function Dashboard() {
               sales: m.sales + (Math.random() < 0.35 ? 1 : 0),
               orders: m.orders + (Math.random() < 0.3 ? 1 : 0),
               revenue: +(m.revenue + Math.random() * 5).toFixed(2),
-              conversion: Math.max(0.1, +(m.sales / m.visits * 100).toFixed(2)),
+              conversion: m.visits > 0 ? Math.max(0, +(m.sales / m.visits * 100).toFixed(2)) : 0,
             }
           : m
       );
     }, 2500);
     return () => clearInterval(t);
-  }, []);
+  }, [user?.ai_activated]);
 
   // Actividad de la IA en directo
   useEffect(() => {
-    if (!data) return;
+    if (!data || !user?.ai_activated) return;
     const gen = () => {
       const d = dataRef.current;
       if (!d) return;
@@ -167,9 +168,24 @@ export default function Dashboard() {
     gen();
     const t = setInterval(gen, 3800);
     return () => clearInterval(t);
-  }, [data]);
+  }, [data, user?.ai_activated]);
 
   const m = live || data?.metrics;
+  const approved = !!user.plan;
+  const activated = !!user.ai_activated;
+  const planName = data?.plans?.find((p) => p.id === user.plan)?.name;
+  const [activating, setActivating] = useState(false);
+
+  const activateAI = async () => {
+    setActivating(true);
+    try {
+      await api("/me/activate-ai", { method: "POST" });
+      const me = await api("/auth/me");
+      setUser(me);
+      await load();
+    } catch {}
+    setActivating(false);
+  };
 
   return (
     <Shell>
@@ -206,6 +222,42 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {!approved ? (
+            <div className="rounded-2xl border border-edge bg-card p-6 md:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center gap-4 justify-between" data-testid="ai-waiting-plan">
+              <div className="flex items-center gap-4">
+                <span className="flex items-center justify-center w-12 h-12 rounded-xl bg-teal/15 text-teal">
+                  <Bot className="w-6 h-6" />
+                </span>
+                <div>
+                  <p className="font-display text-lg leading-tight">Añade un plan para que la IA empiece a trabajar</p>
+                  <p className="text-mist text-sm mt-1">Elige un plan, canjea tu voucher y la IA gestionará tu tienda.</p>
+                </div>
+              </div>
+              <Link to="/app/planes" data-testid="go-plans-btn" className="rounded-full bg-teal text-night px-6 py-3 text-sm font-semibold hover:opacity-90 transition-opacity">
+                Ver planes
+              </Link>
+            </div>
+          ) : !activated ? (
+            <div className="rounded-2xl border border-teal/40 bg-teal/10 p-6 md:p-8 mb-8" data-testid="activate-ai-card">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="w-6 h-6 text-teal" />
+                <p className="font-display text-lg leading-tight">Tu plan {planName} ha sido aprobado</p>
+              </div>
+              <p className="text-mist text-sm mt-2.5 max-w-xl">
+                Ya puedes activar la inteligencia artificial. Al activarla empezará a trabajar en tu
+                tienda y tu dinero aparecerá en el panel.
+              </p>
+              <button
+                onClick={activateAI}
+                disabled={activating}
+                data-testid="activate-ai-btn"
+                className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-teal text-night px-8 py-4 font-semibold hover:bg-tealdeep hover:text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
+              >
+                {activating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Bot className="w-5 h-5" />}
+                {activating ? "Activando…" : "Activar inteligencia artificial en la tienda"}
+              </button>
+            </div>
+          ) : (
           <div className="rounded-2xl border border-teal/30 bg-gradient-to-r from-teal/10 via-card to-card p-5 md:p-6 mb-8 flex flex-col md:flex-row items-start md:items-center gap-4 justify-between" data-testid="ai-status-card">
             <div className="flex items-center gap-4">
               <span className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-teal/15 text-teal">
@@ -219,6 +271,7 @@ export default function Dashboard() {
             </div>
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-teal whitespace-nowrap">● Estado: activo</span>
           </div>
+          )}
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <Kpi icon={Zap} label="Productos analizados" value={m ? fmt(m.products_analyzed) : "—"} testid="kpi-products-analyzed" />
@@ -267,7 +320,8 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="space-y-2.5 overflow-hidden flex-1">
-                {feed.map((f) => (
+                {activated ? (
+                  feed.map((f) => (
                   <motion.div
                     key={f.id}
                     initial={{ opacity: 0, y: -10 }}
@@ -283,7 +337,12 @@ export default function Dashboard() {
                       </p>
                     </div>
                   </motion.div>
-                ))}
+                ))
+                ) : (
+                  <div className="h-full flex items-center justify-center text-center">
+                    <p className="text-mist text-xs px-4">La actividad de la IA aparecerá cuando actives tu plan.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

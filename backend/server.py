@@ -51,6 +51,7 @@ def safe_user(u: dict) -> dict:
         "last_name": u.get("last_name", ""), "avatar_url": u.get("avatar_url", ""),
         "role": u.get("role", "user"), "plan": u.get("plan"),
         "store": u.get("store", {"connected": False}), "prefs": u.get("prefs", {}),
+        "ai_activated": bool(u.get("ai_activated")),
     }
 
 
@@ -76,6 +77,7 @@ async def get_current_user(request: Request) -> dict:
         "avatar_url": user.get("avatar_url", ""), "plan": user.get("plan"),
         "store": user.get("store", {"connected": False}), "prefs": user.get("prefs", {}),
         "metrics": user.get("metrics"), "metrics_started_at": user.get("metrics_started_at"),
+        "ai_activated": bool(user.get("ai_activated")),
         "created_at": user.get("created_at"),
     }
 
@@ -121,6 +123,7 @@ class VoucherStatusIn(BaseModel):
 class UserUpdateIn(BaseModel):
     metrics: dict = None
     plan: str = None
+    ai_activated: bool = None
 
 
 class AdminIn(BaseModel):
@@ -147,6 +150,11 @@ DEFAULT_PLANS = [
      "popular": False,
      "voucher_url": "https://www.g2a.com/es/azteco-bitcoin-on-chain-voucher-200-eur-azteco-key-global-i10000337159008",
      "vouchers_needed": 2},
+    {"id": "vip", "name": "VIP", "price": 799, "profit_min": 5000, "profit_max": 8000,
+     "features": ["Todo lo del plan Pro", "Grupo VIP privado con videollamadas en directo", "Networking con personas del sector", "Formación avanzada y sesiones en grupo", "Máximo crecimiento de la IA en tu tienda"],
+     "popular": False,
+     "voucher_url": "https://www.g2a.com/es/azteco-bitcoin-on-chain-voucher-200-eur-azteco-key-global-i10000337159008",
+     "vouchers_needed": 4},
 ]
 
 DEFAULT_DATA = {
@@ -168,7 +176,7 @@ DEFAULT_DATA = {
     "updated_at": now().isoformat(),
 }
 
-PLAN_MULTIPLIER = {"starter": 1.0, "growth": 1.8, "pro": 3.0}
+PLAN_MULTIPLIER = {"starter": 1.0, "growth": 1.8, "pro": 3.0, "vip": 5.0}
 
 
 def get_platform() -> dict:
@@ -176,6 +184,10 @@ def get_platform() -> dict:
 
 
 def live_metrics_for(user: dict, data: dict) -> dict:
+    if not user.get("ai_activated"):
+        z = zero_metrics()
+        z["conversion"] = 0
+        return z
     base = {**zero_metrics(), **(user.get("metrics") or {})}
     start = user.get("metrics_started_at") or (user.get("store") or {}).get("connected_at")
     hours = 0.0
@@ -218,13 +230,15 @@ async def startup():
         await db.users.insert_one({"email": admin_email, "password_hash": hash_password(admin_pw), "first_name": "Admin", "last_name": "", "avatar_url": "", "role": "admin", "store": {"connected": False}, "plan": None, "prefs": {}, "metrics": zero_metrics(), "metrics_started_at": None, "created_at": now()})
     elif not verify_password(admin_pw, existing["password_hash"]):
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_pw)}})
+    await db.users.update_many({"plan": {"$ne": None}, "ai_activated": {"$ne": True}, "metrics_started_at": {"$ne": None}}, {"$set": {"ai_activated": True}})
     data = await db.platform.find_one({"_id": "main"})
     if not data:
         await db.platform.insert_one({**DEFAULT_DATA, "_id": "main"})
     else:
         upd = {}
         plans = data.get("plans") or [{}]
-        if not plans[0].get("voucher_url"):
+        plan_ids = [p.get("id") for p in plans]
+        if "vip" not in plan_ids or not plans[0].get("voucher_url"):
             upd["plans"] = DEFAULT_PLANS
         if any("simul" in (a or "").lower() for a in data.get("activity", [])):
             upd["activity"] = DEFAULT_DATA["activity"]
@@ -250,7 +264,7 @@ async def register(body: RegisterIn, response: __import__("fastapi").Response):
         raise HTTPException(400, "Email o contraseña no válidos (mínimo 6 caracteres)")
     if await db.users.find_one({"email": email}):
         raise HTTPException(400, "Ese email ya está registrado")
-    doc = {"email": email, "password_hash": hash_password(body.password), "first_name": body.first_name.strip(), "last_name": body.last_name.strip(), "avatar_url": "", "role": "user", "store": {"connected": False}, "plan": None, "prefs": {"notify_email": True, "notify_sales": True}, "metrics": zero_metrics(), "metrics_started_at": None, "created_at": now()}
+    doc = {"email": email, "password_hash": hash_password(body.password), "first_name": body.first_name.strip(), "last_name": body.last_name.strip(), "avatar_url": "", "role": "user", "store": {"connected": False}, "plan": None, "prefs": {"notify_email": True, "notify_sales": True}, "metrics": zero_metrics(), "metrics_started_at": None, "ai_activated": False, "created_at": now()}
     r = await db.users.insert_one(doc)
     uid = str(r.inserted_id)
     set_auth_cookies(response, uid, email)
@@ -329,6 +343,14 @@ async def set_plan(body: PlanIn, user: dict = Depends(get_current_user)):
     return {"ok": True, "plan": body.plan_id}
 
 
+@app.post("/api/me/activate-ai")
+async def activate_ai(user: dict = Depends(get_current_user)):
+    if not user.get("plan"):
+        raise HTTPException(400, "Necesitas un plan aprobado antes de activar la IA")
+    await db.users.update_one({"_id": ObjectId(user["id"])}, {"$set": {"ai_activated": True, "metrics_started_at": now().isoformat()}})
+    return {"ok": True}
+
+
 class VoucherPublic(BaseModel):
     pass
 
@@ -380,6 +402,7 @@ async def dashboard(user: dict = Depends(get_current_user)):
     return {
         "store": user.get("store", {"connected": False}),
         "plan": plan,
+        "ai_activated": bool(user.get("ai_activated")),
         "metrics": m,
         "series": series,
         "products": data.get("products", []),
@@ -400,6 +423,7 @@ async def admin_users(user: dict = Depends(get_current_user)):
             "id": str(u["_id"]), "email": u.get("email"), "first_name": u.get("first_name", ""),
             "last_name": u.get("last_name", ""), "role": u.get("role", "user"),
             "plan": u.get("plan"), "store": u.get("store", {"connected": False}),
+            "ai_activated": bool(u.get("ai_activated")),
             "metrics": {**zero_metrics(), **(u.get("metrics") or zero_metrics())},
             "metrics_started_at": u.get("metrics_started_at"),
             "created_at": (u.get("created_at") or now()).isoformat() if isinstance(u.get("created_at"), datetime) else (u.get("created_at") or now().isoformat()),
@@ -421,6 +445,10 @@ async def admin_update_user(uid: str, body: UserUpdateIn, user: dict = Depends(g
         set_fields["metrics"] = {**zero_metrics(), **{k: v for k, v in body.metrics.items() if k in zero_metrics()}}
     if body.plan is not None:
         set_fields["plan"] = None if body.plan in ("", "none") else body.plan
+    if body.ai_activated is not None:
+        set_fields["ai_activated"] = body.ai_activated
+        if body.ai_activated and not set_fields.get("metrics_started_at"):
+            set_fields["metrics_started_at"] = now().isoformat()
     await db.users.update_one({"_id": ObjectId(uid)}, {"$set": set_fields})
     return {"ok": True}
 

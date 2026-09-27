@@ -28,6 +28,13 @@ Web nueva que simula una plataforma de IA avanzada vinculada a Shopify: el usuar
 ## Pendiente / backlog
 - Protección extra del panel admin (opcional) y Google Analytics si lo desea.
 
+## Iteración 3 (2026-09-27) — flujo de aprobación + plan VIP
+- Nuevo flujo: el usuario canjea el voucher → mensaje "Canjeando voucher… tu dinero aparecerá en breves" → llega al admin → al validar, el usuario ve "Tu plan X ha sido aprobado" y el botón "Activar inteligencia artificial en la tienda" → al pulsarlo arranca la IA y el dinero empieza a generarse (metrics_started_at = activación). Sin plan aprobado: todo en 0 y CTA "Ver planes". Sin activar: el feed muestra "La actividad de la IA aparecerá cuando actives tu plan".
+- Nuevo plan VIP: 799 €, ganancias estimadas 5.000–8.000 €/mes, grupo VIP privado con videollamadas, networking del sector y formación; se activa con 4 vouchers de 200 € (enlace del de 200). Multiplicador de crecimiento 5x.
+- Backend: POST /api/me/activate-ai, ai_activated en usuarios (migración automática de cuentas ya aprobadas), /auth/login devuelve ai_activated, admin puede forzar IA activa por usuario (PUT ai_activated).
+- Corregido: NaN% en conversión cuando las cifras están en 0; el tick local ya no infla métricas antes de la activación.
+- Verificado por curl + UI: circuito completo registro → voucher → validación admin → activación → panel VIP creciendo (conversion 0% sin NaN).
+
 ## Iteración 2 (2026-09-27) — realismo + vouchers Azteco + gestión de usuarios
 - Eliminadas todas las palabras de "simulación/demostración" de la interfaz (grep limpio). Tipografía más corporativa (Sora en lugar de Unbounded), animación flotante eliminada.
 - Métricas por usuario: cada cuenta arranca con TODOS los valores en 0 al vincular su Shopify y crece con el tiempo según tarifa/hora × multiplicador de plan (Starter 1x, Growth 1.8x, Pro 3x).

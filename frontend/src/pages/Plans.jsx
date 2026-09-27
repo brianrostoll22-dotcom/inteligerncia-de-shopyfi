@@ -19,6 +19,7 @@ export default function Plans() {
   const [vouchers, setVouchers] = useState([]);
   const [inputs, setInputs] = useState({});
   const [saving, setSaving] = useState("");
+  const [redeemMsg, setRedeemMsg] = useState({});
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
 
@@ -37,13 +38,14 @@ export default function Plans() {
     setSaving(plan_id);
     setMsg("");
     setError("");
+    setRedeemMsg({ ...redeemMsg, [plan_id]: { type: "load", text: "Canjeando voucher… tu dinero aparecerá en breves." } });
     try {
       await api("/me/voucher", { method: "POST", body: { plan_id, url } });
       setInputs({ ...inputs, [plan_id]: "" });
-      setMsg("Voucher enviado correctamente. Lo estamos verificando.");
+      setRedeemMsg({ ...redeemMsg, [plan_id]: { type: "ok", text: "Voucher recibido. En cuanto sea aprobado, podrás activar la IA en tu panel." } });
       await load();
     } catch (e) {
-      setError(formatDetail(e.message));
+      setRedeemMsg({ ...redeemMsg, [plan_id]: { type: "err", text: formatDetail(e.message) } });
     } finally {
       setSaving("");
     }
@@ -129,7 +131,7 @@ export default function Plans() {
 
               {p.vouchers_needed > 1 && (
                 <p className="mt-5 rounded-lg border border-lav/30 bg-lav/10 text-lav text-xs px-4 py-2.5" data-testid={`plan-needs-2-${p.id}`}>
-                  Este plan se activa adquiriendo <strong>2 vouchers de 200 €</strong> (puedes canjearlos juntos o de uno en uno).
+                  Este plan se activa adquiriendo <strong>{p.vouchers_needed} vouchers de 200 €</strong> (puedes canjearlos juntos o de uno en uno).
                 </p>
               )}
 
@@ -164,6 +166,20 @@ export default function Plans() {
                   {saving === p.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "Canjear"}
                 </button>
               </div>
+              {redeemMsg[p.id] && (
+                <p
+                  data-testid={`redeem-msg-${p.id}`}
+                  className={`mt-3 text-xs leading-relaxed rounded-lg px-3.5 py-2.5 ${
+                    redeemMsg[p.id].type === "ok"
+                      ? "border border-teal/40 bg-teal/10 text-teal"
+                      : redeemMsg[p.id].type === "err"
+                      ? "border border-danger/40 bg-danger/10 text-danger"
+                      : "border border-lav/40 bg-lav/10 text-lav"
+                  }`}
+                >
+                  {redeemMsg[p.id].text}
+                </p>
+              )}
             </div>
           );
         })}

@@ -19,6 +19,7 @@ function UserRow({ u, plans, onSaved }) {
   const [open, setOpen] = useState(false);
   const [metrics, setMetrics] = useState(u.metrics);
   const [plan, setPlan] = useState(u.plan || "none");
+  const [aiOn, setAiOn] = useState(!!u.ai_activated);
   const [busy, setBusy] = useState(false);
   const isNew = Date.now() - new Date(u.created_at).getTime() < 48 * 3600 * 1000;
   const planName = plans.find((p) => p.id === u.plan)?.name;
@@ -26,7 +27,10 @@ function UserRow({ u, plans, onSaved }) {
   const save = async () => {
     setBusy(true);
     try {
-      await api(`/admin/users/${u.id}`, { method: "PUT", body: { metrics, plan: plan === "none" ? null : plan } });
+      await api(`/admin/users/${u.id}`, {
+        method: "PUT",
+        body: { metrics, plan: plan === "none" ? null : plan, ai_activated: aiOn },
+      });
       await onSaved();
     } catch (e) {
       alert(formatDetail(e.message));
@@ -86,6 +90,10 @@ function UserRow({ u, plans, onSaved }) {
           <span className={`rounded-full border px-3 py-1 text-[10px] font-semibold ${u.plan ? "border-teal/40 bg-teal/10 text-teal" : "border-edge text-mist"}`}>
             {planName || "Sin plan"}
           </span>
+          <span className={`hidden xl:inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-semibold ${u.ai_activated ? "border-teal/40 bg-teal/10 text-teal" : "border-edge text-mist"}`} data-testid={`user-ai-state-${u.id}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${u.ai_activated ? "bg-teal" : "bg-mist/50"}`} />
+            {u.ai_activated ? "IA activa" : "IA en espera"}
+          </span>
           <button onClick={() => setOpen(!open)} data-testid={`user-toggle-${u.id}`} aria-label="Gestionar usuario" className="text-mist hover:text-white transition-colors p-1">
             {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
@@ -102,6 +110,17 @@ function UserRow({ u, plans, onSaved }) {
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
+          </div>
+          <div className="flex items-center justify-between gap-4 rounded-lg border border-edge bg-card px-4 py-3" data-testid={`user-ai-toggle-${u.id}`}>
+            <span className="text-sm text-mist">Inteligencia artificial activa (genera ingresos)</span>
+            <button
+              type="button"
+              onClick={() => setAiOn(!aiOn)}
+              className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${aiOn ? "bg-teal" : "bg-edge"}`}
+              aria-label="Activar o desactivar la IA"
+            >
+              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${aiOn ? "left-[22px]" : "left-0.5"}`} />
+            </button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {Object.keys(METRIC_LABELS).map((k) => (
