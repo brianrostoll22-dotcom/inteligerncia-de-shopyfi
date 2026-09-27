@@ -1,41 +1,42 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Landing from "@/pages/Landing";
-import Stats from "@/pages/Stats";
-
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error) {
-    console.error("Render error:", error);
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-bone text-ink font-sans p-8 text-center">
-          <p className="font-serif text-3xl">Algo salió mal. Recarga la página, por favor.</p>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
 function App() {
   return (
-    <BrowserRouter>
-      <ErrorBoundary>
-        <Routes>
-          <Route path="/estadisticas" element={<Stats />} />
-          <Route path="*" element={<Landing />} />
-        </Routes>
-      </ErrorBoundary>
-    </BrowserRouter>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#FAF9F5",
+        color: "#1C1D1A",
+        fontFamily: "system-ui, sans-serif",
+        textAlign: "center",
+        padding: "24px",
+      }}
+    >
+      <div>
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            margin: "0 auto 24px",
+            borderRadius: 16,
+            background: "#1C1D1A",
+            color: "#C87D20",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "Georgia, serif",
+            fontSize: 22,
+          }}
+        >
+          ✳
+        </div>
+        <h1 style={{ fontSize: 28, fontWeight: 600, margin: 0 }}>Nuevo proyecto en camino</h1>
+        <p style={{ color: "#6B6D66", marginTop: 12 }}>
+          Cuéntame qué web quieres crear y empezamos.
+        </p>
+      </div>
+    </div>
   );
 }
 

@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://elite-shepherd-dogs.preview.emergentagent.com/sitemap.xml
