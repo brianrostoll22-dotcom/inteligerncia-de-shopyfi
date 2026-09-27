@@ -2,7 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  * {
+    @apply border-edge;
+  }
+  body {
+    @apply bg-night text-white font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-teal text-night;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(16, 26, 44, 0.6);
+    backdrop-filter: blur(14px);
+  }
+  .glow {
+    box-shadow: 0 0 40px rgba(45, 212, 191, 0.15);
+  }
+  .grid-bg {
+    background-image: linear-gradient(rgba(45, 212, 191, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45, 212, 191, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #05070c;
+}
+::-webkit-scrollbar-thumb {
+  background: #1d2a44;
+  border-radius: 8px;
 }
