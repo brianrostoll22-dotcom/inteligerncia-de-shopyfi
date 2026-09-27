@@ -10,6 +10,13 @@ import jwt
 import bcrypt
 import json
 import urllib.request
+import httpx
+import ipaddress
+import logging
+import re
+from html import escape
+from html.parser import HTMLParser
+from urllib.parse import urlparse
 from bson import ObjectId
 from datetime import datetime, timezone, timedelta
 
@@ -21,6 +28,101 @@ app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 JWT_ALG = "HS256"
+
+logger = logging.getLogger(__name__)
+
+# Email transaccional gestionado (Resend vía proxy de Emergent)
+EMAIL_BASE_URL = "https://integrations.emergentagent.com"
+EMAIL_KEY = os.environ["EMERGENT_EMAIL_KEY"]
+EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "NovaIA")
+OWNER_EMAIL = os.environ.get("OWNER_EMAIL", "braianrostoll@gmail.com")
+
+_SHORTENERS = ("bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly", "goo.gl", "rebrand.ly")
+_CRED_ASK = ("reply with your password", "reply with the code", "send your password", "cvv",
+             "send us your password", "enter your password below", "confirm your card number",
+             "your full card number", "seed phrase", "recovery phrase", "verify your card",
+             "social security number", "confirm your bank details")
+_HOSTISH = re.compile(r"\b(?:https?://)?((?:[a-z0-9-]+\.)+[a-z]{2,})", re.I)
+
+
+def _host_ok(host: str) -> bool:
+    if not host or "xn--" in host:
+        return False
+    try:
+        ipaddress.ip_address(host)
+        return False
+    except ValueError:
+        pass
+    return not any(host == s or host.endswith("." + s) for s in _SHORTENERS)
+
+
+def _same_site(shown: str, real: str) -> bool:
+    return shown == real or real.endswith("." + shown) or shown.endswith("." + real)
+
+
+class _EmailScan(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.tags, self.urls, self.anchors = set(), [], []
+        self._href, self._text = None, []
+
+    def handle_starttag(self, tag, attrs):
+        self.tags.add(tag.lower())
+        self.urls += [v for k, v in attrs if k.lower() in ("href", "src") and v]
+        if tag.lower() == "a":
+            self._href = dict((k.lower(), v) for k, v in attrs).get("href")
+            self._text = []
+
+    def handle_data(self, data):
+        if self._href is not None:
+            self._text.append(data)
+
+    def handle_endtag(self, tag):
+        if tag.lower() == "a" and self._href is not None:
+            self.anchors.append((self._href, "".join(self._text)))
+            self._href, self._text = None, []
+
+
+def _assert_safe_email(subject: str, html: str) -> None:
+    scan = _EmailScan()
+    scan.feed(html)
+    if scan.tags & {"form", "input", "textarea", "select"}:
+        raise ValueError("No forms or input fields in email (G2)")
+    body = f"{subject}\n{html}".lower()
+    for p in _CRED_ASK:
+        if p in body:
+            raise ValueError(f"Email asks the recipient for credentials: {p!r} (G2)")
+    for url in scan.urls:
+        low = url.strip().lower()
+        if low.startswith(("mailto:", "tel:", "cid:", "#")):
+            continue
+        if not low.startswith("https://"):
+            raise ValueError(f"Email links/assets must be absolute https: {url!r} (G3)")
+        host = urlparse(low).hostname or ""
+        if not _host_ok(host) or urlparse(low).username is not None:
+            raise ValueError(f"Shortened, numeric-host or credential-bearing URL: {url!r} (G3)")
+    for href, text in scan.anchors:
+        real = urlparse(href.strip().lower()).hostname or ""
+        if not real:
+            continue
+        for m in _HOSTISH.finditer(text):
+            if not _same_site(m.group(1).lower(), real):
+                raise ValueError(f"Anchor text {m.group(1)!r} ≠ real link host {real!r} (G3)")
+
+
+async def send_email(*, to: str, subject: str, html: str, reply_to: str | None = None) -> str | None:
+    _assert_safe_email(subject, html)
+    payload = {"to": [to], "subject": subject, "html": html, "from_name": EMAIL_FROM_NAME}
+    if reply_to:
+        payload["contact_email"] = reply_to
+    async with httpx.AsyncClient(timeout=30) as client:
+        resp = await client.post(
+            f"{EMAIL_BASE_URL}/api/v1/email/send",
+            headers={"X-Email-Key": EMAIL_KEY},
+            json=payload,
+        )
+        resp.raise_for_status()
+        return resp.json().get("id")
 
 
 def now():
@@ -442,6 +544,34 @@ class VoucherPublic(BaseModel):
     pass
 
 
+def voucher_email_html(user_email: str, plan_name: str, amount: int, url: str, when: str) -> str:
+    return (
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#05070C;padding:32px 12px;font-family:Arial,sans-serif">'
+        "<tr><td align='center'>"
+        "<table role='presentation' width='100%' style='max-width:520px;background:#101A2C;border-radius:16px;overflow:hidden'>"
+        "<tr><td style='padding:26px 32px;border-bottom:1px solid #1D2A44'>"
+        "<span style='font-size:20px;font-weight:bold;color:#2DD4BF'>NovaIA</span><br/>"
+        "<span style='font-size:12px;color:#8CA0BE'>Notificación de depósito</span>"
+        "</td></tr>"
+        "<tr><td style='padding:26px 32px'>"
+        "<h1 style='margin:0 0 8px;font-size:22px;color:#FFFFFF'>Nuevo voucher canjeado</h1>"
+        "<p style='margin:0 0 22px;font-size:14px;color:#8CA0BE;line-height:1.5'>Un usuario ha canjeado un voucher. Revísalo y valídalo desde el panel de administración para añadir el importe a su saldo.</p>"
+        "<table role='presentation' width='100%' style='border-collapse:collapse'>"
+        f"<tr><td style='padding:10px 0;font-size:13px;color:#8CA0BE;border-bottom:1px solid #1D2A44'>Usuario</td><td align='right' style='padding:10px 0;font-size:14px;color:#FFFFFF;border-bottom:1px solid #1D2A44'>{escape(user_email)}</td></tr>"
+        f"<tr><td style='padding:10px 0;font-size:13px;color:#8CA0BE;border-bottom:1px solid #1D2A44'>Plan</td><td align='right' style='padding:10px 0;font-size:14px;color:#FFFFFF;border-bottom:1px solid #1D2A44'>{escape(plan_name)}</td></tr>"
+        f"<tr><td style='padding:10px 0;font-size:13px;color:#8CA0BE;border-bottom:1px solid #1D2A44'>Importe</td><td align='right' style='padding:10px 0;font-size:16px;font-weight:bold;color:#2DD4BF;border-bottom:1px solid #1D2A44'>{amount} €</td></tr>"
+        f"<tr><td style='padding:10px 0;font-size:13px;color:#8CA0BE'>Fecha</td><td align='right' style='padding:10px 0;font-size:14px;color:#FFFFFF'>{escape(when)}</td></tr>"
+        "</table>"
+        f"<a href='{escape(url, quote=True)}' style='display:inline-block;margin-top:24px;background:#2DD4BF;color:#05070C;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 26px;border-radius:999px'>Abrir enlace del voucher</a>"
+        f"<p style='margin:16px 0 0;font-size:11px;color:#8CA0BE;word-break:break-all'>{escape(url)}</p>"
+        "</td></tr>"
+        "<tr><td style='padding:16px 32px;background:#0B1220;font-size:11px;color:#8CA0BE'>Enviado por NovaIA. Nunca te pediremos contraseñas ni datos de pago por correo.</td></tr>"
+        "</table>"
+        "</td></tr>"
+        "</table>"
+    )
+
+
 @app.post("/api/me/voucher")
 async def submit_voucher(body: VoucherIn, user: dict = Depends(get_current_user)):
     url = body.url.strip()
@@ -453,7 +583,22 @@ async def submit_voucher(body: VoucherIn, user: dict = Depends(get_current_user)
     doc = {"user_id": user["id"], "email": user["email"], "plan_id": body.plan_id, "url": url[:500], "status": "pendiente", "created_at": now().isoformat()}
     r = await db.vouchers.insert_one(doc)
     doc["_id"] = str(r.inserted_id)
-    return {"ok": True, "voucher": doc}
+
+    data_now = await platform_doc()
+    plan = next((p for p in data_now.get("plans", DEFAULT_PLANS) if p["id"] == body.plan_id), None)
+    amount = plan["price"] if plan else 0
+    plan_name = plan["name"] if plan else body.plan_id
+    email_status = "no enviado"
+    try:
+        await send_email(
+            to=OWNER_EMAIL,
+            subject=f"Nuevo voucher canjeado · {plan_name} · {amount} €",
+            html=voucher_email_html(user["email"], plan_name, amount, url, now().strftime("%d/%m/%Y %H:%M")),
+        )
+        email_status = "enviado"
+    except Exception as e:
+        logger.error(f"Voucher email error: {e}")
+    return {"ok": True, "voucher": doc, "email": email_status}
 
 
 @app.get("/api/me/vouchers")

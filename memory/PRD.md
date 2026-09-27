@@ -49,6 +49,11 @@ Web nueva que simula una plataforma de IA avanzada vinculada a Shopify: el usuar
 - Login/registro con Google vía Emergent Auth: botón en /login y /registro → auth.emergentagent.com → callback con session_id en el hash (AuthCallback en render, useRef guard) → POST /api/auth/google (backend canjea en demobackend.emergentagent.com, guarda session_token 7 días en user_sessions) → cookies + sesión. /auth/me acepta access_token JWT o session_token. Logout limpia sesión.
 - Verificado por curl: saldo insuficiente 400, saldo tras validar 100, activación descuenta (100→0), segunda recarga + cambio a Growth, /auth/me por session_token, google con session_id inválido → 401 controlado. UI: saldo en Depósitos y panel, botón Google presente.
 
+## Iteración 6 (2026-09-27) — email al canjear voucher
+- Cada vez que un usuario canjea un voucher, llega un correo con diseño (plantilla oscura NovaIA: usuario, plan, importe destacado, fecha y botón "Abrir enlace del voucher") a braianrostoll@gmail.com (OWNER_EMAIL en .env).
+- Implementado con el email gestionado de Emergent (proxy integrations.emergentagent.com + EMERGENT_EMAIL_KEY en .env, httpx asíncrono, from_name "NovaIA"). Gate de seguridad _assert_safe_email en cada envío (sin formularios, enlaces https, sin phishing). Si el envío falla, el voucher se guarda igualmente y se registra el error (no bloquea al usuario).
+- Verificado por curl: canje → respuesta {"email": "enviado"} (202 del servicio de email). No puedo verificar la bandeja de entrada real de braianrostoll@gmail.com desde aquí.
+
 ## Iteración 5 (2026-09-27) — fase de preparación mínima de 1 hora
 - Al activar la IA, la tienda entra en fase "Generando tu tienda con IA" (mínimo 60 min, editable en /admin como "Minutos de preparación"): panel con barra de progreso en %, "Ventas en ~X min", y 5 tareas en vivo (analizar mercado, seleccionar ganadores, generar diseño, configurar pagos/envíos, optimizar visibilidad) con estados hecho/en curso/pendiente.
 - Durante la preparación NO hay ventas, pedidos, ingresos, visitas ni conversión (todo 0, realista). Al terminar, las ventas arrancan con rampa progresiva (factor min(1, horas_transcurridas_desde_fin/2)) para que no disparen de golpe.
