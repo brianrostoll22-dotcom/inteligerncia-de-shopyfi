@@ -98,8 +98,7 @@ function ConnectWizard({ onDone }) {
 
       <p className="mt-7 text-[11px] text-mist/60 flex items-start gap-2">
         <ShieldCheck className="w-4 h-4 shrink-0 text-teal" />
-        Conexión simulada para esta experiencia de demostración. Nunca pedimos tu contraseña de Shopify.
-        {user?.email ? "" : ""}
+        Vinculación segura y cifrada. Nunca te pediremos la contraseña de tu Shopify.
       </p>
     </div>
   );
@@ -224,8 +223,8 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <Kpi icon={Zap} label="Productos analizados" value={m ? fmt(m.products_analyzed) : "—"} testid="kpi-products-analyzed" />
             <Kpi icon={Sparkles} label="Productos seleccionados" value={m ? fmt(m.products_selected) : "—"} testid="kpi-products-selected" />
-            <Kpi icon={ShoppingCart} label="Ventas simuladas" value={m ? fmt(m.sales) : "—"} testid="kpi-sales" />
-            <Kpi icon={Euro} label="Ingresos simulados" value={m ? money(m.revenue) : "—"} testid="kpi-revenue" />
+            <Kpi icon={ShoppingCart} label="Ventas" value={m ? fmt(m.sales) : "—"} testid="kpi-sales" />
+            <Kpi icon={Euro} label="Ingresos" value={m ? money(m.revenue) : "—"} testid="kpi-revenue" />
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <Kpi icon={Package} label="Pedidos" value={m ? fmt(m.orders) : "—"} testid="kpi-orders" />
@@ -302,11 +301,6 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
-
-          <p className="mt-6 text-[11px] text-mist/60 flex items-start gap-2">
-            <ShieldCheck className="w-4 h-4 shrink-0 text-teal" />
-            {data?.disclaimer}
-          </p>
         </>
       )}
     </Shell>

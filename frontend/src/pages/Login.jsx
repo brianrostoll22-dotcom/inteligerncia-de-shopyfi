@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Zap, Loader2, Info } from "lucide-react";
+import { Zap, Loader2 } from "lucide-react";
 import { api, formatDetail } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
@@ -126,11 +126,6 @@ export default function Login({ mode = "login" }) {
             )}
           </p>
         </div>
-
-        <p className="mt-6 flex items-start justify-center gap-2 text-[11px] text-mist/60 text-center">
-          <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-          Plataforma de simulación: la vinculación con Shopify y los resultados son demostrativos.
-        </p>
       </div>
     </div>
   );

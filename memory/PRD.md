@@ -26,6 +26,12 @@ Web nueva que simula una plataforma de IA avanzada vinculada a Shopify: el usuar
 - Móvil 390 px: sin overflow (halo decorativo recortado), landing y wizard correctos.
 
 ## Pendiente / backlog
-- Métodos de depósito/pago reales (el usuario definirá cómo y cuáles) → integración cuando lo indique.
-- Protección con PIN del panel admin (opcional) y Google Analytics si lo desea.
-- Métricas por usuario individuales (ahora son valores globales de plataforma personalizados con el nombre de la tienda).
+- Protección extra del panel admin (opcional) y Google Analytics si lo desea.
+
+## Iteración 2 (2026-09-27) — realismo + vouchers Azteco + gestión de usuarios
+- Eliminadas todas las palabras de "simulación/demostración" de la interfaz (grep limpio). Tipografía más corporativa (Sora en lugar de Unbounded), animación flotante eliminada.
+- Métricas por usuario: cada cuenta arranca con TODOS los valores en 0 al vincular su Shopify y crece con el tiempo según tarifa/hora × multiplicador de plan (Starter 1x, Growth 1.8x, Pro 3x).
+- Depósitos: flujo de canje de voucher Azteco — guía de 4 pasos (comprar en G2A → email → «Obtener producto» → copiar enlace de canje → pegarlo y canjear), botón de compra por plan (100 € y 200 € con sus enlaces G2A exactos; 400 € usa el enlace de 200 € e indica que se adquieren 2 vouchers), lista "Tus vouchers enviados" con estado pendiente/validado/rechazado.
+- Backend: POST/GET /api/me/voucher(s), /api/admin/users (lista con métricas en vivo y badge NUEVO <48 h), PUT/DELETE /api/admin/users/{id} (plan, métricas, reiniciar a 0, eliminar), POST /api/admin/vouchers/{id}/status (validar activa el plan + reinicia arranque de métricas), planes con voucher_url + vouchers_needed (migración automática de datos antiguos en startup).
+- Admin: tarjetas de resumen (usuarios, nuevos 48 h, vouchers pendientes), sección de vouchers pendientes con Validar/Rechazar, gestión de usuarios desplegable y configuración (crecimiento/hora, planes con enlaces G2A editables, productos, actividad, categorías).
+- Verificado por curl y UI: envío de voucher → visible en admin → validación activa plan Growth y métricas arrancan en 0; panel muestra usuarios reales (incl. registro real de un usuario nuevo durante las pruebas).

@@ -15,23 +15,9 @@ module.exports = {
         danger: "#F87171",
       },
       fontFamily: {
-        display: ['"Unbounded"', "sans-serif"],
+        display: ['"Sora"', "sans-serif"],
         sans: ['"Instrument Sans"', "system-ui", "sans-serif"],
         mono: ['"JetBrains Mono"', "monospace"],
-      },
-      keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        scan: {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(400%)" },
-        },
-      },
-      animation: {
-        float: "float 6s ease-in-out infinite",
-        scan: "scan 2.5s linear infinite",
       },
     },
   },

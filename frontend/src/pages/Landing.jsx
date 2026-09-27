@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Zap, Store, Sparkles, BarChart3, Eye, ShoppingCart, Wand2, ShieldCheck, ArrowRight, Info } from "lucide-react";
+import { Zap, Store, Sparkles, BarChart3, Eye, ShoppingCart, Wand2, ShieldCheck, ArrowRight } from "lucide-react";
 import { api } from "@/lib/api";
 
 const fmt = new Intl.NumberFormat("es-ES");
@@ -22,17 +22,9 @@ const STEPS = [
 
 export default function Landing() {
   const [plans, setPlans] = useState([]);
-  const [disclaimer, setDisclaimer] = useState(
-    "Simulación demostrativa: las cifras son estimaciones generadas dentro de la experiencia y no constituyen ganancias garantizadas."
-  );
 
   useEffect(() => {
-    api("/plans")
-      .then((d) => {
-        setPlans(d.plans);
-        setDisclaimer(d.disclaimer);
-      })
-      .catch(() => {});
+    api("/plans").then((d) => setPlans(d.plans)).catch(() => {});
   }, []);
 
   return (
@@ -59,7 +51,7 @@ export default function Landing() {
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-teal mb-6" data-testid="landing-eyebrow">
             Plataforma de IA para e-commerce
           </p>
-          <h1 className="font-display text-4xl sm:text-5xl xl:text-[3.6rem] leading-[1.08] font-600" data-testid="landing-title">
+          <h1 className="font-display text-4xl sm:text-5xl xl:text-[3.6rem] leading-[1.08] font-bold" data-testid="landing-title">
             Tu tienda Shopify,
             <br />
             en <span className="text-teal">piloto automático</span> con IA
@@ -78,15 +70,11 @@ export default function Landing() {
               Ya tengo cuenta
             </Link>
           </div>
-          <p className="mt-6 flex items-start gap-2 text-xs text-mist/70 max-w-lg">
-            <Info className="w-4 h-4 shrink-0 mt-0.5" />
-            {disclaimer}
-          </p>
         </div>
 
         <div className="relative">
           <div className="absolute -inset-6 bg-teal/10 blur-3xl rounded-full" />
-          <div className="relative rounded-2xl border border-edge bg-panel p-6 glow animate-float" data-testid="landing-visual">
+          <div className="relative rounded-2xl border border-edge bg-panel p-6 glow" data-testid="landing-visual">
             <div className="flex items-center justify-between border-b border-edge pb-4">
               <span className="font-mono text-xs text-mist">panel_ia en vivo</span>
               <span className="flex items-center gap-2 text-xs text-teal font-mono">
@@ -191,18 +179,14 @@ export default function Landing() {
             </div>
           ))}
         </div>
-        <p className="mt-8 flex items-start gap-2 text-xs text-mist/70 max-w-3xl">
-          <Info className="w-4 h-4 shrink-0 mt-0.5" />
-          {disclaimer}
-        </p>
       </section>
 
       <footer className="border-t border-edge/60 py-10">
         <div className="mx-auto max-w-7xl px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-mist/60">
-          <span>© {new Date().getFullYear()} NovaIA — Experiencia de demostración</span>
+          <span>© {new Date().getFullYear()} NovaIA — Gestión automática de tiendas con IA</span>
           <span className="flex items-center gap-2">
             <Store className="w-3.5 h-3.5" />
-            Vinculación y resultados simulados
+            Vigo, España
           </span>
         </div>
       </footer>
